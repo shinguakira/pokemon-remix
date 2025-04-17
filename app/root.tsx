@@ -7,8 +7,6 @@ import {
 } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/node";
 
-import "./tailwind.css";
-
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
   {
@@ -22,24 +20,56 @@ export const links: LinksFunction = () => [
   },
 ];
 
-export function Layout({ children }: { children: React.ReactNode }) {
+export default function App() {
   return (
     <html lang="en">
       <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Pokemon Remix</title>
         <Meta />
         <Links />
+        <style>
+          {`
+            body {
+              height: 100vh;
+              margin: 0;
+              display: flex;
+              justify-content: center;
+              background-image: url("/assets/background-art.jpeg");
+              background-size: cover;
+              background-position: center;
+            }
+
+            canvas {
+              max-width: 100%;
+              object-fit: contain;
+            }
+          `}
+        </style>
       </head>
       <body>
-        {children}
+        <canvas id="game"></canvas>
+        <script src="p5.min.js"></script>
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            // prevent itch.io scrolling
+            window.addEventListener("keydown", (e) => {
+              if (
+                ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(
+                  e.key
+                )
+              ) {
+                e.preventDefault();
+              }
+            });
+          `
+        }} />
+        <script type="module" src="main.js"></script>
+        <Outlet />
         <ScrollRestoration />
         <Scripts />
       </body>
     </html>
   );
-}
-
-export default function App() {
-  return <Outlet />;
 }

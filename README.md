@@ -1,40 +1,21 @@
-# Welcome to Remix!
+# Pokemon prototype game made with JavaScript + p5.js
 
-- 📖 [Remix docs](https://remix.run/docs)
+![Screenshot of the game](./screenshot.png)
 
-## Development
+Live demo : https://jslegend.itch.io/p5-pokemon-prototype
 
-Run the dev server:
+A prototype pokemon game that includes :
 
-```shellscript
-npm run dev
-```
+- camera
+- scenes
+- basic battle system
+- basic animation player system
+- player controller
+- basic collision detection
 
-## Deployment
+Made with JavaScript and the p5.js creative coding library.
 
-First, build your app for production:
+Tutorial on how to build this : https://www.youtube.com/watch?v=WPT2BmkFFyo
 
-```sh
-npm run build
-```
-
-Then run the app in production mode:
-
-```sh
-npm start
-```
-
-Now you'll need to pick a host to deploy it to.
-
-### DIY
-
-If you're familiar with deploying Node applications, the built-in Remix app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-- `build/server`
-- `build/client`
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever css framework you prefer. See the [Vite docs on css](https://vitejs.dev/guide/features.html#css) for more information.
+I run a YouTube channel where I make long-form JS gamedev tutorials.
+If you're interested you can take a look : https://youtube.com/@jslegenddev
