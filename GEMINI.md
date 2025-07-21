@@ -23,6 +23,7 @@ This is a Pokémon-style game prototype built with Remix, TypeScript, and p5.js.
 - `entities/`: Contains game entities like the player, NPCs, and camera.
 - `scenes/`: Contains the different game scenes (menu, world, battle).
 - `assets/`: Contains game assets like images and fonts.
+- `maps/world.json`: This file (specifically `public/maps/world.json` which is served) contains the map layout and crucial spawn point data for players and NPCs.
 - `main.js`: The main entry point for the p5.js game, handling the game loop and scene management.
 - `package.json`: Defines project dependencies and scripts.
 

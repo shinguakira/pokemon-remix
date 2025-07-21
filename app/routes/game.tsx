@@ -19,7 +19,6 @@ export default function GameRoute() {
           display: flex;
           justify-content: center;
           align-items: center;
-          background-image: url("/assets/background-art.jpeg");
           background-size: cover;
           background-position: center;
         }
