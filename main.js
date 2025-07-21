@@ -9,13 +9,24 @@ new p5((p) => {
   let currentScene = "menu";
   function setScene(name) {
     if (scenes.includes(name)) {
+      const previousScene = currentScene; // Store the current scene before updating
       currentScene = name;
+
+      if (name === "world") {
+        world.reset();
+        // If coming from battle, reset battle scene as well
+        if (previousScene === "battle") {
+          battle.reset();
+        }
+      } else if (name === "battle") {
+        battle.setup();
+      }
     }
   }
 
   const menu = makeMenu(p);
   const world = makeWorld(p, setScene);
-  const battle = makeBattle(p);
+  const battle = makeBattle(p, setScene, world);
 
   p.preload = () => {
     font = p.loadFont("./assets/power-clear.ttf");
@@ -66,6 +77,7 @@ new p5((p) => {
       setScene("world");
 
     if (currentScene === "battle") battle.onKeyPressed(keyEvent);
+    if (currentScene === "world") world.onKeyPressed(keyEvent);
   };
 
   p.keyReleased = () => {

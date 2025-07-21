@@ -57,16 +57,18 @@ export function makeNPC(p, x, y) {
       );
     },
 
-    handleCollisionsWith(entity, collisionEvent) {
+    handleCollisionsWith(entity, collisionEvent, shouldFreezePlayer) {
       // If the player has already collided and is frozen due to dialog
       // no need to recompute collision
-      if (entity.freeze) return;
+      if (entity.freeze && shouldFreezePlayer) return;
 
       const collision = checkCollision(this, entity);
 
       if (collision) {
         preventOverlap(this, entity);
-        entity.freeze = true;
+        if (shouldFreezePlayer) {
+          entity.freeze = true;
+        }
         collisionEvent();
       }
     },

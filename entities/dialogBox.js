@@ -37,6 +37,8 @@ export function makeDialogBox(p, x, y) {
     clearText() {
       this.line = "";
       this.lineChars = [];
+      this.isComplete = false;
+      this.onCompleteCallback = null;
     },
 
     update() {
@@ -52,7 +54,11 @@ export function makeDialogBox(p, x, y) {
 
         if (!nextChar && !this.isComplete) {
           this.isComplete = true;
-          if (this.onCompleteCallback) this.onCompleteCallback();
+          if (this.onCompleteCallback) {
+            const callback = this.onCompleteCallback;
+            this.onCompleteCallback = null; // Clear callback to prevent re-triggering
+            callback();
+          }
           return;
         }
 

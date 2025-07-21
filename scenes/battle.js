@@ -1,4 +1,6 @@
 import { makeDialogBox } from "../entities/dialogBox.js";
+import { makePokemon } from "../entities/pokemon.js";
+import { POKEMON_DATA } from "../entities/pokemon-data.js";
 
 const states = {
   default: "default",
@@ -12,41 +14,7 @@ const states = {
   winnerDeclared: "winner-declared",
 };
 
-function makePokemon(name, x, finalX, y, maxHp, attacks, dataBox) {
-  return {
-    name,
-    finalX,
-    x,
-    y,
-    spriteRef: null,
-    maxHp,
-    hp: maxHp,
-    attacks,
-    selectedAttack: null,
-    isFainted: false,
-    dataBox,
-  };
-}
-
-function makeDataBox(x, y, nameX, nameY, healthBarX, healthBarY) {
-  return {
-    x,
-    y,
-    nameOffset: {
-      x: nameX,
-      y: nameY,
-    },
-    healthBarOffset: {
-      x: healthBarX,
-      y: healthBarY,
-    },
-    spriteRef: null,
-    maxHealthBarLength: 96,
-    healthBarLength: 96,
-  };
-}
-
-export function makeBattle(p) {
+export function makeBattle(p, setScene, world) {
   return {
     dialogBox: makeDialogBox(p, 0, 288),
     currentState: "default",
@@ -55,87 +23,94 @@ export function makeBattle(p) {
       y: 20,
       spriteRef: null,
     },
-    npcPokemon: makePokemon(
-      "VENUSAUR",
-      600,
-      310,
-      20,
-      100,
-      [
-        { name: "TACKLE", power: 10 },
-        { name: "RAZOR LEAF", power: 55 },
-        { name: "TAKE DOWN", power: 45 },
-        { name: "POWER WHIP", power: 50 },
-      ],
-      makeDataBox(-300, 40, 15, 30, 118, 40)
-    ),
-    playerPokemon: makePokemon(
-      "BLASTOISE",
-      -170,
-      20,
-      128,
-      100,
-      [
-        { name: "TACKLE", power: 10 },
-        { name: "HYDRO PUMP", power: 50 },
-        { name: "HYDRO CANNON", power: 45 },
-        { name: "WATER GUN", power: 50 },
-      ],
-      makeDataBox(510, 220, 38, 30, 136, 40)
-    ),
-    drawDataBox(pokemon) {
-      p.image(pokemon.dataBox.spriteRef, pokemon.dataBox.x, pokemon.dataBox.y);
+    npcPokemon: makePokemon(POKEMON_DATA.VENUSAUR),
+    playerPokemon: makePokemon(POKEMON_DATA.BLASTOISE),
+    sprites: {
+      npc: null,
+      npcPokemon: null,
+      playerPokemon: null,
+      playerDataBox: null,
+      npcDataBox: null,
+    },
+    dataBoxPositions: {
+      player: { x: 510, initialX: 510, y: 220, nameX: 38, nameY: 30, healthBarX: 136, healthBarY: 40 },
+      npc: { x: -300, initialX: -300, y: 40, nameX: 15, nameY: 30, healthBarX: 118, healthBarY: 40 },
+    },
+    pokemonPositions: {
+      player: { x: -170, initialX: -170, finalX: 20, y: 128 },
+      npc: { x: 600, initialX: 600, finalX: 310, y: 20 },
+    },
+    selectedMoveIndex: -1,
+
+    drawDataBox(pokemon, position, sprite) {
+      p.image(sprite, position.x, position.y);
       p.text(
         pokemon.name,
-        pokemon.dataBox.x + pokemon.dataBox.nameOffset.x,
-        pokemon.dataBox.y + pokemon.dataBox.nameOffset.y
+        position.x + position.nameX,
+        position.y + position.nameY
       );
 
       p.push();
       p.angleMode(p.DEGREES);
       p.rotate(360);
       p.noStroke();
-      if (pokemon.dataBox.healthBarLength > 50) {
+      const healthBarLength = (pokemon.currentHp / pokemon.maxHp) * 96;
+      if (healthBarLength > 50) {
         p.fill(0, 200, 0);
-      }
-      if (pokemon.dataBox.healthBarLength < 50) {
+      } else if (healthBarLength < 20) {
+        p.fill(200, 0, 0);
+      } else {
         p.fill(255, 165, 0);
       }
-      if (pokemon.dataBox.healthBarLength < 20) {
-        p.fill(200, 0, 0);
-      }
       p.rect(
-        pokemon.dataBox.x + pokemon.dataBox.healthBarOffset.x,
-        pokemon.dataBox.y + pokemon.dataBox.healthBarOffset.y,
-        pokemon.dataBox.healthBarLength,
+        position.x + position.healthBarX,
+        position.y + position.healthBarY,
+        healthBarLength,
         6
       );
       p.pop();
     },
-    async dealDamage(targetPokemon, attackingPokemon) {
-      targetPokemon.hp -= attackingPokemon.selectedAttack.power;
-      if (targetPokemon.hp > 0) {
-        targetPokemon.dataBox.healthBarLength =
-          (targetPokemon.hp * targetPokemon.dataBox.maxHealthBarLength) /
-          targetPokemon.maxHp;
-        return;
-      }
-      targetPokemon.dataBox.healthBarLength = 0;
-      targetPokemon.isFainted = true;
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      this.currentState = states.battleEnd;
+    async handlePlayerAttack() {
+      this.dialogBox.clearText();
+      this.dialogBox.displayText(
+        `${this.playerPokemon.name} used ${this.playerPokemon.moves[this.selectedMoveIndex].name}!`,
+        async () => {
+          this.playerPokemon.attackMove(this.npcPokemon, this.selectedMoveIndex);
+          if (this.npcPokemon.isFainted) {
+            this.currentState = states.battleEnd;
+          } else {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            this.dialogBox.clearText();
+            this.currentState = states.npcTurn;
+          }
+        }
+      );
+    },
+    async handleNpcAttack() {
+      const moveIndex = Math.floor(Math.random() * this.npcPokemon.moves.length);
+      this.dialogBox.clearText();
+      this.dialogBox.displayText(
+        `The foe's ${this.npcPokemon.name} used ${this.npcPokemon.moves[moveIndex].name}!`,
+        async () => {
+          this.npcPokemon.attackMove(this.playerPokemon, moveIndex);
+          if (this.playerPokemon.isFainted) {
+            this.currentState = states.battleEnd;
+          }
+          else {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            this.selectedMoveIndex = -1;
+            this.currentState = states.playerTurn;
+          }
+        }
+      );
     },
     load() {
       this.battleBackgroundImage = p.loadImage("assets/battle-background.png");
-      this.npc.spriteRef = p.loadImage("assets/GENTLEMAN.png");
-      this.npcPokemon.spriteRef = p.loadImage("assets/VENUSAUR.png");
-      this.playerPokemon.spriteRef = p.loadImage("assets/BLASTOISE.png");
-      this.playerPokemon.dataBox.spriteRef = p.loadImage(
-        "assets/databox_thin.png"
-      );
-      this.npcPokemon.dataBox.spriteRef = p.loadImage(
-        "assets/databox_thin_foe.png"
-      );
+      this.sprites.npc = p.loadImage("assets/GENTLEMAN.png");
+      this.sprites.npcPokemon = p.loadImage("assets/VENUSAUR.png");
+      this.sprites.playerPokemon = p.loadImage("assets/BLASTOISE.png");
+      this.sprites.playerDataBox = p.loadImage("assets/databox_thin.png");
+      this.sprites.npcDataBox = p.loadImage("assets/databox_thin_foe.png");
       this.dialogBox.load();
     },
     setup() {
@@ -146,19 +121,19 @@ export function makeBattle(p) {
           this.currentState = states.introNpc;
           this.dialogBox.clearText();
           this.dialogBox.displayText(
-            `He sends out a ${this.npcPokemon.name} !`,
+            `He sends out a ${this.npcPokemon.name}!`, 
             async () => {
               this.currentState = states.introNpcPokemon;
               await new Promise((resolve) => setTimeout(resolve, 1000));
               this.dialogBox.clearText();
               this.dialogBox.displayText(
-                `Go! ${this.playerPokemon.name} !`,
+                `Go! ${this.playerPokemon.name}!`, 
                 async () => {
                   this.currentState = states.introPlayerPokemon;
                   await new Promise((resolve) => setTimeout(resolve, 1000));
                   this.dialogBox.clearText();
                   this.dialogBox.displayText(
-                    `What will ${this.playerPokemon.name} do ?`,
+                    `What will ${this.playerPokemon.name} do?`, 
                     async () => {
                       await new Promise((resolve) => setTimeout(resolve, 1000));
                       this.currentState = states.playerTurn;
@@ -179,27 +154,27 @@ export function makeBattle(p) {
 
       if (
         this.currentState === states.introNpcPokemon &&
-        this.npcPokemon.x >= this.npcPokemon.finalX
+        this.pokemonPositions.npc.x >= this.pokemonPositions.npc.finalX
       ) {
-        this.npcPokemon.x -= 0.5 * p.deltaTime;
-        if (this.npcPokemon.dataBox.x <= 0)
-          this.npcPokemon.dataBox.x += 0.5 * p.deltaTime;
+        this.pokemonPositions.npc.x -= 0.5 * p.deltaTime;
+        if (this.dataBoxPositions.npc.x <= 0)
+          this.dataBoxPositions.npc.x += 0.5 * p.deltaTime;
       }
 
       if (
         this.currentState === states.introPlayerPokemon &&
-        this.playerPokemon.x <= this.playerPokemon.finalX
+        this.pokemonPositions.player.x <= this.pokemonPositions.player.finalX
       ) {
-        this.playerPokemon.x += 0.5 * p.deltaTime;
-        this.playerPokemon.dataBox.x -= 0.65 * p.deltaTime;
+        this.pokemonPositions.player.x += 0.5 * p.deltaTime;
+        this.dataBoxPositions.player.x -= 0.65 * p.deltaTime;
       }
 
       if (this.playerPokemon.isFainted) {
-        this.playerPokemon.y += 0.8 * p.deltaTime;
+        this.pokemonPositions.player.y += 0.8 * p.deltaTime;
       }
 
       if (this.npcPokemon.isFainted) {
-        this.npcPokemon.y += 0.8 * p.deltaTime;
+        this.pokemonPositions.npc.y += 0.8 * p.deltaTime;
       }
 
       this.dialogBox.update();
@@ -209,79 +184,48 @@ export function makeBattle(p) {
       p.background(0);
       p.image(this.battleBackgroundImage, 0, 0);
 
-      p.image(this.npcPokemon.spriteRef, this.npcPokemon.x, this.npcPokemon.y);
+      p.image(this.sprites.npcPokemon, this.pokemonPositions.npc.x, this.pokemonPositions.npc.y);
+      this.drawDataBox(this.npcPokemon, this.dataBoxPositions.npc, this.sprites.npcDataBox);
 
-      this.drawDataBox(this.npcPokemon);
-
-      p.image(
-        this.playerPokemon.spriteRef,
-        this.playerPokemon.x,
-        this.playerPokemon.y
-      );
-
-      this.drawDataBox(this.playerPokemon);
+      p.image(this.sprites.playerPokemon, this.pokemonPositions.player.x, this.pokemonPositions.player.y);
+      this.drawDataBox(this.playerPokemon, this.dataBoxPositions.player, this.sprites.playerDataBox);
 
       if (
         this.currentState === states.default ||
         this.currentState === states.introNpc
       )
-        p.image(this.npc.spriteRef, this.npc.x, this.npc.y);
+        p.image(this.sprites.npc, this.npc.x, this.npc.y);
 
       if (
         this.currentState === states.playerTurn &&
-        !this.playerPokemon.selectedAttack
+        this.selectedMoveIndex === -1
       ) {
         this.dialogBox.displayTextImmediately(
-          `1) ${this.playerPokemon.attacks[0].name}    3) ${this.playerPokemon.attacks[2].name}\n2) ${this.playerPokemon.attacks[1].name}   4) ${this.playerPokemon.attacks[3].name}`
+          `1) ${this.playerPokemon.moves[0].name}    3) ${this.playerPokemon.moves[2].name}\n2) ${this.playerPokemon.moves[1].name}   4) ${this.playerPokemon.moves[3].name}`
         );
       }
 
-      if (
-        this.currentState === states.playerTurn &&
-        this.playerPokemon.selectedAttack &&
-        !this.playerPokemon.isAttacking &&
-        !this.playerPokemon.isFainted
-      ) {
-        this.dialogBox.clearText();
-        this.dialogBox.displayText(
-          `${this.playerPokemon.name} used ${this.playerPokemon.selectedAttack.name} !`,
-          async () => {
-            await this.dealDamage(this.npcPokemon, this.playerPokemon);
-            if (this.currentState !== states.battleEnd) {
-              await new Promise((resolve) => setTimeout(resolve, 1000));
-              this.dialogBox.clearText();
-              this.currentState = states.npcTurn;
-            }
-          }
-        );
-        this.playerPokemon.isAttacking = true;
+      if (this.currentState === states.playerAttack) {
+        this.handlePlayerAttack();
+        this.currentState = "processing"; // Prevent re-triggering
       }
-
-      if (this.currentState === states.npcTurn && !this.npcPokemon.isFainted) {
-        this.npcPokemon.selectedAttack =
-          this.npcPokemon.attacks[
-            Math.floor(Math.random() * this.npcPokemon.attacks.length)
-          ];
-        this.dialogBox.clearText();
-        this.dialogBox.displayText(
-          `The foe's ${this.npcPokemon.name} used ${this.npcPokemon.selectedAttack.name} !`,
-          async () => {
-            await this.dealDamage(this.playerPokemon, this.npcPokemon);
-            if (this.currentState !== states.battleEnd) {
-              await new Promise((resolve) => setTimeout(resolve, 1000));
-              this.playerPokemon.selectedAttack = null;
-              this.playerPokemon.isAttacking = false;
-            }
-          }
-        );
-        this.currentState = states.playerTurn;
+      
+      if (this.currentState === states.npcTurn) {
+        this.handleNpcAttack();
+        this.currentState = "processing"; // Prevent re-triggering
       }
 
       if (this.currentState === states.battleEnd) {
         if (this.npcPokemon.isFainted) {
           this.dialogBox.clearText();
           this.dialogBox.displayText(
-            `${this.npcPokemon.name} fainted ! You won !`
+            `${this.npcPokemon.name} fainted! You won!`,
+            async () => {
+              world.isNpcDefeated = true;
+              this.dialogBox.setVisibility(false); // Explicitly hide dialog box
+              await new Promise((resolve) => setTimeout(resolve, 2000));
+              setScene("world");
+            }
           );
           this.currentState = states.winnerDeclared;
           return;
@@ -290,7 +234,12 @@ export function makeBattle(p) {
         if (this.playerPokemon.isFainted) {
           this.dialogBox.clearText();
           this.dialogBox.displayText(
-            `${this.playerPokemon.name} fainted ! You lost !`
+            `${this.playerPokemon.name} fainted! You lost!`,
+            async () => {
+              this.dialogBox.setVisibility(false); // Explicitly hide dialog box
+              await new Promise((resolve) => setTimeout(resolve, 2000));
+              setScene("world");
+            }
           );
           this.currentState = states.winnerDeclared;
         }
@@ -303,20 +252,39 @@ export function makeBattle(p) {
       if (this.currentState === states.playerTurn) {
         switch (keyEvent.key) {
           case "1":
-            this.playerPokemon.selectedAttack = this.playerPokemon.attacks[0];
+            this.selectedMoveIndex = 0;
             break;
           case "2":
-            this.playerPokemon.selectedAttack = this.playerPokemon.attacks[1];
+            this.selectedMoveIndex = 1;
             break;
           case "3":
-            this.playerPokemon.selectedAttack = this.playerPokemon.attacks[2];
+            this.selectedMoveIndex = 2;
             break;
           case "4":
-            this.playerPokemon.selectedAttack = this.playerPokemon.attacks[3];
+            this.selectedMoveIndex = 3;
             break;
           default:
+            return;
         }
+        this.currentState = states.playerAttack;
       }
+    },
+
+    reset() {
+      this.dialogBox.clearText();
+      this.dialogBox.setVisibility(false);
+      this.currentState = states.default;
+      this.selectedMoveIndex = -1;
+      // Reset Pokemon HP and fainted status for next battle
+      this.playerPokemon.currentHp = this.playerPokemon.maxHp;
+      this.playerPokemon.isFainted = false;
+      this.npcPokemon.currentHp = this.npcPokemon.maxHp;
+      this.npcPokemon.isFainted = false;
+      // Reset positions for intro animation
+      this.pokemonPositions.player.x = this.pokemonPositions.player.initialX;
+      this.pokemonPositions.npc.x = this.pokemonPositions.npc.initialX;
+      this.dataBoxPositions.player.x = this.dataBoxPositions.player.initialX;
+      this.dataBoxPositions.npc.x = this.dataBoxPositions.npc.initialX;
     },
   };
 }

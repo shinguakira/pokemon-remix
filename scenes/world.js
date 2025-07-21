@@ -11,6 +11,8 @@ export function makeWorld(p, setScene) {
     npc: makeNPC(p, 0, 0),
     map: makeTiledMap(p, 100, -150),
     dialogBox: makeDialogBox(p, 0, 280),
+    isNpcDefeated: false,
+    isInDialogue: false,
     makeScreenFlash: false,
     alpha: 0,
     blinkBack: false,
@@ -61,19 +63,28 @@ export function makeWorld(p, setScene) {
       p.clear();
       p.background(0);
       this.npc.handleCollisionsWith(this.player, () => {
-        this.dialogBox.displayText(
-          "I see that you need training.\nLet's battle !",
-          async () => {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            this.dialogBox.setVisibility(false);
-            this.makeScreenFlash = true;
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            this.makeScreenFlash = false;
-            setScene("battle");
-          }
-        );
+        this.isInDialogue = true;
+        if (this.isNpcDefeated) {
+          this.dialogBox.displayText("You already defeated me...");
+        } else {
+          this.dialogBox.displayText(
+            "I see that you need training.\nLet's battle !",
+            async () => {
+              await new Promise((resolve) => setTimeout(resolve, 1000));
+              this.dialogBox.setVisibility(false);
+              this.makeScreenFlash = true;
+              await new Promise((resolve) => setTimeout(resolve, 1000));
+              this.makeScreenFlash = false;
+              setScene("battle");
+            }
+          );
+        }
         this.dialogBox.setVisibility(true);
-      });
+        if(this.isNpcDefeated) {
+          this.dialogBox.displayTextImmediately("You already defeated me...");
+          this.dialogBox.setVisibility(false);
+        }
+      }, !this.isNpcDefeated);
       this.map.draw(this.camera, this.player);
       this.npc.draw(this.camera);
       this.player.draw(this.camera);
@@ -109,6 +120,21 @@ export function makeWorld(p, setScene) {
           this.player.setAnim("idle-side");
           break;
         default:
+      }
+    },
+
+    reset() {
+      this.player.freeze = false;
+      this.dialogBox.clearText();
+      this.dialogBox.setVisibility(false);
+      this.isInDialogue = false;
+    },
+
+    onKeyPressed(keyEvent) {
+      if (this.isInDialogue && keyEvent.keyCode === p.ENTER) {
+        this.dialogBox.setVisibility(false);
+        this.isInDialogue = false;
+        this.player.freeze = false;
       }
     },
   };
