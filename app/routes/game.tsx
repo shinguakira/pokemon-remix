@@ -10,24 +10,11 @@ export const meta: MetaFunction = () => {
 
 export default function GameRoute() {
   return (
-    <div className="game-page">
+    <div
+      className="h-screen m-0 flex justify-center items-center bg-cover bg-center"
+      style={{ backgroundImage: "url('/assets/background-art.jpeg')" }}
+    >
       <Game />
-      <style jsx="true">{`
-        .game-page {
-          height: 100vh;
-          margin: 0;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          background-size: cover;
-          background-position: center;
-        }
-        
-        :global(canvas) {
-          max-width: 100%;
-          object-fit: contain;
-        }
-      `}</style>
     </div>
   );
 }

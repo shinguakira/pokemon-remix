@@ -2,62 +2,34 @@ import { useEffect, useRef } from "react";
 
 export default function Game() {
   const gameContainerRef = useRef<HTMLDivElement>(null);
+  const gameRef = useRef<{ start: () => void } | null>(null);
 
   useEffect(() => {
     // Only run this effect in the browser
     if (typeof window === "undefined") return;
 
-    // Load p5.js script
-    const loadP5Script = () => {
-      return new Promise<void>((resolve) => {
-        if (window.p5) {
-          resolve();
-          return;
-        }
-
-        const script = document.createElement("script");
-        script.src = "/p5.min.js";
-        script.onload = () => resolve();
-        document.body.appendChild(script);
-      });
-    };
-
-    // Load game script
-    const loadGameScript = () => {
-      return new Promise<void>((resolve) => {
-        const script = document.createElement("script");
-        script.src = "/game-bundle.js";
-        script.type = "module";
-        script.onload = () => resolve();
-        document.body.appendChild(script);
-      });
-    };
-
+    // Dynamically import the game module (client-side only)
     const initGame = async () => {
-      await loadP5Script();
-      await loadGameScript();
+      try {
+        const { createGame } = await import("../../src/Game");
+        gameRef.current = createGame();
+      } catch (error) {
+        console.error("Failed to initialize game:", error);
+      }
     };
 
     initGame();
 
     // Cleanup function
     return () => {
-      const p5Script = document.querySelector('script[src="/p5.min.js"]');
-      const gameScript = document.querySelector('script[src="/game-bundle.js"]');
-      
-      if (p5Script) {
-        p5Script.remove();
-      }
-      
-      if (gameScript) {
-        gameScript.remove();
-      }
+      // Game cleanup would go here if needed
+      gameRef.current = null;
     };
   }, []);
 
   return (
     <div className="game-container" ref={gameContainerRef}>
-      <canvas id="game"></canvas>
+      <canvas id="game" className="max-w-full object-contain"></canvas>
     </div>
   );
 }
