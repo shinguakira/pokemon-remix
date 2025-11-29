@@ -6,7 +6,7 @@ import type {
   IUpdatable,
   IDrawable,
 } from "../core/interfaces";
-import { gameEvents } from "../core/EventEmitter";
+import { eventBus } from "../core/EventBus";
 
 /**
  * Configuration for dialog box
@@ -81,7 +81,7 @@ export class DialogBox implements IDialog, ILoadable, IUpdatable, IDrawable {
    */
   show(): void {
     this.isVisible = true;
-    gameEvents.emit("dialog:show", { text: this.fullText });
+    eventBus.emit("dialog:show", { text: this.fullText });
   }
 
   /**
@@ -89,7 +89,7 @@ export class DialogBox implements IDialog, ILoadable, IUpdatable, IDrawable {
    */
   hide(): void {
     this.isVisible = false;
-    gameEvents.emit("dialog:hide", undefined);
+    eventBus.emit("dialog:hide", undefined);
   }
 
   /**
@@ -98,9 +98,9 @@ export class DialogBox implements IDialog, ILoadable, IUpdatable, IDrawable {
   setVisibility(visible: boolean): void {
     this.isVisible = visible;
     if (visible) {
-      gameEvents.emit("dialog:show", { text: this.fullText });
+      eventBus.emit("dialog:show", { text: this.fullText });
     } else {
-      gameEvents.emit("dialog:hide", undefined);
+      eventBus.emit("dialog:hide", undefined);
     }
   }
 
@@ -176,7 +176,7 @@ export class DialogBox implements IDialog, ILoadable, IUpdatable, IDrawable {
    */
   private completeText(): void {
     this.isComplete = true;
-    gameEvents.emit("dialog:complete", undefined);
+    eventBus.emit("dialog:complete", undefined);
 
     if (this.onCompleteCallback) {
       const callback = this.onCompleteCallback;

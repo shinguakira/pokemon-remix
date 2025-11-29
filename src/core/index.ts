@@ -5,14 +5,17 @@ export * from "./types";
 export * from "./interfaces";
 
 // Event System
-export {
-  EventEmitter,
-  gameEvents,
-  emitGameEvent,
-  onGameEvent,
-  offGameEvent,
-} from "./EventEmitter";
-export type { GameEvents } from "./EventEmitter";
+export { EventBus, eventBus } from "./EventBus";
+export { emitGameEvent, onGameEvent, onceGameEvent } from "./GameEvents";
+export type {
+  BattleStartData,
+  BattleCompleteData,
+  BattleAttackData,
+  DialogShowData,
+  NPCInteractData,
+  PlayerMoveData,
+  GameEventMap,
+} from "./GameEvents";
 
 // Utilities
 export * from "./utils";

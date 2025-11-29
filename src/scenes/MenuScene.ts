@@ -1,7 +1,7 @@
 import type p5 from "p5";
 import type { P5Instance, SceneName, KeyEvent } from "../core/types";
 import { Scene } from "./Scene";
-import { emitGameEvent } from "../core/EventEmitter";
+import { emitGameEvent } from "../core/GameEvents";
 
 /**
  * Menu scene - the game's title/start screen
@@ -72,7 +72,7 @@ export class MenuScene extends Scene {
   onKeyPressed(event: KeyEvent): void {
     // ENTER keyCode is 13
     if (event.keyCode === 13) {
-      emitGameEvent("scene:change", { to: "world" });
+      emitGameEvent("scene:transition", { to: "world" });
     }
   }
 }

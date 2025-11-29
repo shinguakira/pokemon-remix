@@ -1,6 +1,8 @@
 import type { P5Instance, SceneName, KeyEvent } from "../core/types";
 import type { IScene, ISceneManager } from "../core/interfaces";
-import { gameEvents, emitGameEvent } from "../core/EventEmitter";
+import { eventBus } from "../core/EventBus";
+import { emitGameEvent, onGameEvent } from "../core/GameEvents";
+import { gameState } from "../state/GameState";
 
 /**
  * Manages game scenes and transitions between them.
@@ -14,6 +16,16 @@ export class SceneManager implements ISceneManager {
   constructor(p: P5Instance, initialScene: SceneName = "menu") {
     this.p = p;
     this._currentScene = initialScene;
+    this.setupEventListeners();
+  }
+
+  /**
+   * Setup event listeners for scene transitions
+   */
+  private setupEventListeners(): void {
+    onGameEvent("scene:transition", (data) => {
+      this.setScene(data.to, data.context);
+    });
   }
 
   /**
@@ -77,10 +89,9 @@ export class SceneManager implements ISceneManager {
     }
 
     // Emit scene change event
-    emitGameEvent("scene:change", {
+    emitGameEvent("scene:changed", {
       from: previousScene,
       to: name,
-      data,
     });
 
     console.log(`Scene changed: ${previousScene} -> ${name}`);

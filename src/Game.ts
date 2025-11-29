@@ -2,7 +2,8 @@ import p5 from "p5";
 import type { P5Instance, KeyEvent } from "./core/types";
 import { SceneManager, MenuScene, WorldScene, BattleScene } from "./scenes";
 import { debugMode } from "./debug/DebugMode";
-import { onGameEvent } from "./core/EventEmitter";
+import { eventBus } from "./core/EventBus";
+import { gameState } from "./state/GameState";
 
 // Extend p5 type to include preload
 declare module "p5" {
@@ -72,15 +73,9 @@ export class Game {
     // Load all scenes
     this.sceneManager.loadAll();
 
-    // Listen for scene change events from menu
-    onGameEvent("scene:change", (data) => {
-      if (this.sceneManager && data.to) {
-        this.sceneManager.setScene(
-          data.to as "menu" | "world" | "battle",
-          data.data
-        );
-      }
-    });
+    // SceneManager now handles scene:transition events automatically
+    // Enable debug mode for event logging during development
+    eventBus.setDebug(false);
   }
 
   /**
@@ -131,11 +126,8 @@ export class Game {
       return;
     }
 
-    // Handle Enter on menu (ENTER keyCode is 13)
-    if (event.keyCode === 13 && this.sceneManager?.currentScene === "menu") {
-      this.sceneManager.setScene("world");
-      return;
-    }
+    // Let scenes handle their own input
+    // Menu scene handles ENTER key internally
 
     // Forward to current scene
     this.sceneManager?.onKeyPressed(event);

@@ -1,5 +1,5 @@
 import type { Move, PokemonConfig, PokemonStats } from "../core/types";
-import { gameEvents } from "../core/EventEmitter";
+import { eventBus } from "../core/EventBus";
 
 /**
  * Pokemon entity for battle system.
@@ -76,7 +76,7 @@ export class Pokemon {
 
     if (this.currentHp <= 0) {
       this.isFainted = true;
-      gameEvents.emit("battle:faint", { pokemon: this.name });
+      eventBus.emit("battle:faint", { pokemon: this.name, isPlayer: false });
     }
   }
 
@@ -96,7 +96,7 @@ export class Pokemon {
     const damage = this.calculateDamage(target, move);
     target.takeDamage(damage);
 
-    gameEvents.emit("battle:attack", {
+    eventBus.emit("battle:attack", {
       attacker: this.name,
       defender: target.name,
       move: move.name,

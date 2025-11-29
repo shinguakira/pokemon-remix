@@ -1,29 +1,56 @@
 import { useEffect, useRef } from "react";
 
+declare global {
+  interface Window {
+    p5: any;
+  }
+}
+
 export default function Game() {
   const gameContainerRef = useRef<HTMLDivElement>(null);
-  const gameRef = useRef<{ start: () => void } | null>(null);
+  const scriptsLoaded = useRef(false);
 
   useEffect(() => {
-    // Only run this effect in the browser
-    if (typeof window === "undefined") return;
+    if (typeof window === "undefined" || scriptsLoaded.current) return;
+    scriptsLoaded.current = true;
 
-    // Dynamically import the game module (client-side only)
-    const initGame = async () => {
-      try {
-        const { createGame } = await import("../../src/Game");
-        gameRef.current = createGame();
-      } catch (error) {
-        console.error("Failed to initialize game:", error);
-      }
+    // Load p5.js script
+    const loadP5 = () => {
+      return new Promise<void>((resolve) => {
+        if (window.p5) {
+          resolve();
+          return;
+        }
+        const script = document.createElement("script");
+        script.src = "/p5.min.js";
+        script.onload = () => resolve();
+        document.body.appendChild(script);
+      });
     };
 
-    initGame();
+    // Load main game script
+    const loadGame = () => {
+      return new Promise<void>((resolve) => {
+        const script = document.createElement("script");
+        script.src = "/main.js";
+        script.type = "module";
+        script.onload = () => resolve();
+        document.body.appendChild(script);
+      });
+    };
 
-    // Cleanup function
+    const init = async () => {
+      await loadP5();
+      await loadGame();
+    };
+
+    init();
+
     return () => {
-      // Game cleanup would go here if needed
-      gameRef.current = null;
+      // Cleanup scripts on unmount
+      document
+        .querySelectorAll('script[src="/p5.min.js"], script[src="/main.js"]')
+        .forEach((s) => s.remove());
     };
   }, []);
 

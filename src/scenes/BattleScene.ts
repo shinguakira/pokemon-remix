@@ -2,7 +2,9 @@ import type p5 from "p5";
 import type { P5Instance, SceneName, KeyEvent } from "../core/types";
 import { Scene } from "./Scene";
 import { DialogBox, Pokemon, createPokemon } from "../entities";
-import { emitGameEvent } from "../core/EventEmitter";
+import { emitGameEvent } from "../core/GameEvents";
+import { gameState } from "../state/GameState";
+import { getPokemon } from "../data/pokemon";
 import { wait } from "../core/utils";
 
 /**
@@ -427,9 +429,11 @@ export class BattleScene extends Scene {
       this.dialogBox.displayText(
         `${this.npcPokemon.name} fainted! You won!`,
         async () => {
-          emitGameEvent("battle:end", {
-            winner: "player",
+          emitGameEvent("battle:complete", {
             npcId: this.currentNpcId,
+            result: "win",
+            expGained: 500,
+            moneyGained: 1000,
           });
           this.dialogBox.hide();
           await wait(2000);
@@ -442,9 +446,9 @@ export class BattleScene extends Scene {
       this.dialogBox.displayText(
         `${this.playerPokemon.name} fainted! You lost!`,
         async () => {
-          emitGameEvent("battle:end", {
-            winner: "npc",
+          emitGameEvent("battle:complete", {
             npcId: this.currentNpcId,
+            result: "lose",
           });
           this.dialogBox.hide();
           await wait(2000);
@@ -459,7 +463,7 @@ export class BattleScene extends Scene {
     if (this.setScene) {
       this.setScene("world");
     } else {
-      emitGameEvent("scene:change", { to: "world" });
+      emitGameEvent("scene:transition", { to: "world" });
     }
   }
 

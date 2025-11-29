@@ -2,7 +2,8 @@ import type { P5Instance, SceneName, KeyEvent } from "../core/types";
 import { Scene } from "./Scene";
 import { Player, NPC, Camera, DialogBox, TiledMap } from "../entities";
 import { checkCollision, preventOverlap } from "../core/utils";
-import { emitGameEvent, onGameEvent, offGameEvent } from "../core/EventEmitter";
+import { emitGameEvent, onGameEvent } from "../core/GameEvents";
+import { gameState } from "../state/GameState";
 
 /**
  * World scene - the main overworld exploration scene
@@ -19,7 +20,7 @@ export class WorldScene extends Scene {
 
   // State
   private isInDialogue: boolean = false;
-  private isNpcDefeated: boolean = false;
+  private currentNpcId: string = "gentleman_01";
 
   // Screen flash effect
   private isFlashing: boolean = false;
@@ -62,11 +63,10 @@ export class WorldScene extends Scene {
   }
 
   /**
-   * Set NPC defeated state (called from battle scene via events)
+   * Check if current NPC is defeated (from GameState)
    */
-  setNpcDefeated(defeated: boolean): void {
-    this.isNpcDefeated = defeated;
-    this.npc.setDefeated(defeated);
+  private isNpcDefeated(): boolean {
+    return gameState.isNPCDefeated(this.currentNpcId);
   }
 
   load(p: P5Instance): void {
@@ -108,11 +108,8 @@ export class WorldScene extends Scene {
   }
 
   private setupEventListeners(): void {
-    onGameEvent("battle:end", (data) => {
-      if (data.winner === "player") {
-        this.setNpcDefeated(true);
-      }
-    });
+    // GameState handles battle:complete events automatically
+    // NPC defeated state is read from GameState
   }
 
   update(deltaTime: number): void {
@@ -149,19 +146,20 @@ export class WorldScene extends Scene {
     if (checkCollision(this.npc, this.player)) {
       preventOverlap(this.npc, this.player);
 
-      if (!this.isNpcDefeated) {
+      // Get NPC dialogue from GameState
+      const npcState = gameState.getNPC(this.currentNpcId);
+      const dialogue = gameState.getNPCDialogue(this.currentNpcId);
+
+      if (!this.isNpcDefeated()) {
         this.player.setFreeze(true);
         this.isInDialogue = true;
         this.dialogBox.show();
-        this.dialogBox.displayText(
-          "I see that you need training.\nLet's battle!",
-          async () => {
-            await this.startBattleTransition();
-          }
-        );
+        this.dialogBox.displayText(dialogue, async () => {
+          await this.startBattleTransition();
+        });
       } else {
         this.dialogBox.show();
-        this.dialogBox.displayTextImmediately("You already defeated me...");
+        this.dialogBox.displayTextImmediately(dialogue);
       }
     }
   }
@@ -178,15 +176,31 @@ export class WorldScene extends Scene {
 
     this.isFlashing = false;
 
-    // Change to battle scene
-    if (this.setScene) {
-      this.setScene("battle", { npcId: this.npc.npcId });
-    } else {
-      emitGameEvent("scene:change", {
-        to: "battle",
-        data: { npcId: this.npc.npcId },
-      });
-    }
+    // Get NPC data for battle context
+    const npcState = gameState.getNPC(this.currentNpcId);
+    const playerPokemon = gameState.getPlayerPokemon();
+
+    // Emit battle start event with full context
+    emitGameEvent("battle:start", {
+      npcId: this.currentNpcId,
+      npcName: npcState ? `${npcState.name} the ${npcState.title}` : "Trainer",
+      npcPokemon: npcState?.pokemon ?? ["VENUSAUR"],
+      playerPokemon: playerPokemon.map((p) => p.name),
+      location: "tower",
+    });
+
+    // Transition to battle scene
+    emitGameEvent("scene:transition", {
+      to: "battle",
+      context: {
+        npcId: this.currentNpcId,
+        npcName: npcState
+          ? `${npcState.name} the ${npcState.title}`
+          : "Trainer",
+        npcPokemon: npcState?.pokemon ?? ["VENUSAUR"],
+        playerPokemon: playerPokemon.map((p) => p.name),
+      },
+    });
   }
 
   private updateFlashEffect(deltaTime: number): void {

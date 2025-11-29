@@ -99,12 +99,6 @@ export interface PokemonConfig {
 
 export type SceneName = "menu" | "world" | "battle";
 
-export interface SceneTransitionData {
-  from?: SceneName;
-  to: SceneName;
-  data?: Record<string, unknown>;
-}
-
 // =============================================================================
 // Map Types
 // =============================================================================
