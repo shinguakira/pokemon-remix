@@ -14,6 +14,23 @@ export default function Game() {
     if (typeof window === "undefined" || scriptsLoaded.current) return;
     scriptsLoaded.current = true;
 
+    // Prevent arrow keys from scrolling the page
+    const preventScroll = (e: KeyboardEvent) => {
+      if (
+        [
+          "ArrowUp",
+          "ArrowDown",
+          "ArrowLeft",
+          "ArrowRight",
+          " ",
+          "Escape",
+        ].includes(e.key)
+      ) {
+        e.preventDefault();
+      }
+    };
+    window.addEventListener("keydown", preventScroll);
+
     // Load p5.js script
     const loadP5 = () => {
       return new Promise<void>((resolve) => {
@@ -47,7 +64,8 @@ export default function Game() {
     init();
 
     return () => {
-      // Cleanup scripts on unmount
+      // Cleanup on unmount
+      window.removeEventListener("keydown", preventScroll);
       document
         .querySelectorAll('script[src="/p5.min.js"], script[src="/main.js"]')
         .forEach((s) => s.remove());

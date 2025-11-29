@@ -32,8 +32,10 @@ export default function App() {
         <Meta />
         <Links />
       </head>
-      <body>
-        <Outlet />
+      <body className="h-full">
+        <div className="h-full">
+          <Outlet />
+        </div>
         <ScrollRestoration />
         <Scripts />
       </body>

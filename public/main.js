@@ -2,6 +2,8 @@ import { makeMenu } from "./scenes/menu.js";
 import { debugMode } from "./entities/debugMode.js";
 import { makeWorld } from "./scenes/world.js";
 import { makeBattle } from "./scenes/battle.js";
+import { makeSettingsMenu } from "./scenes/settingsMenu.js";
+import { gameState } from "./entities/gameState.js";
 
 new p5((p) => {
   let font;
@@ -27,12 +29,16 @@ new p5((p) => {
   const menu = makeMenu(p);
   const world = makeWorld(p, setScene);
   const battle = makeBattle(p, setScene, world);
+  const settingsMenu = makeSettingsMenu(p, setScene, world, battle);
 
   p.preload = () => {
     font = p.loadFont("./assets/power-clear.ttf");
     world.load();
     menu.load();
     battle.load();
+
+    // Try to load saved game
+    gameState.load();
   };
 
   p.setup = () => {
@@ -66,11 +72,27 @@ new p5((p) => {
     }
 
     debugMode.drawFpsCounter(p);
+
+    // Draw settings menu on top
+    settingsMenu.update();
+    settingsMenu.draw();
   };
 
   p.keyPressed = (keyEvent) => {
     if (keyEvent.key === "Shift") {
       debugMode.toggle();
+    }
+
+    // ESC to toggle settings menu (only in world scene)
+    if (keyEvent.keyCode === 27 && currentScene === "world") {
+      settingsMenu.toggle();
+      return;
+    }
+
+    // If settings menu is open, only handle menu input
+    if (settingsMenu.isOpen) {
+      settingsMenu.onKeyPressed(keyEvent);
+      return;
     }
 
     if (keyEvent.keyCode === p.ENTER && currentScene === "menu")
