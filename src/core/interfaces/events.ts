@@ -87,9 +87,9 @@ export interface GameEventMap {
 
 	// Dialog events
 	'dialog:show': DialogShowData;
-	'dialog:complete': void;
-	'dialog:hide': void;
-	'dialog:skip': void;
+	'dialog:complete': undefined;
+	'dialog:hide': undefined;
+	'dialog:skip': undefined;
 
 	// NPC events
 	'npc:interact': NPCInteractData;
@@ -101,10 +101,10 @@ export interface GameEventMap {
 	'player:freeze': { frozen: boolean };
 
 	// Game state events
-	'game:save': void;
-	'game:load': void;
-	'game:pause': void;
-	'game:resume': void;
+	'game:save': undefined;
+	'game:load': undefined;
+	'game:pause': undefined;
+	'game:resume': undefined;
 
 	// Debug events
 	'debug:toggle': { enabled: boolean };

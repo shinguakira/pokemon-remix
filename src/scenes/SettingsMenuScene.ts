@@ -199,7 +199,7 @@ export class SettingsMenuScene {
 		p.textSize(isActive ? 14 : 12);
 		p.textAlign(p.LEFT, p.TOP);
 		p.text(pokemon.name, x + 10, y + 8);
-		p.text('Lv.' + pokemon.level, x + (isActive ? 10 : w - 60), y + (isActive ? 28 : 8));
+		p.text(`Lv.${pokemon.level}`, x + (isActive ? 10 : w - 60), y + (isActive ? 28 : 8));
 
 		const hpBarX = x + 10;
 		const hpBarY = y + (isActive ? 70 : 28);
@@ -215,7 +215,7 @@ export class SettingsMenuScene {
 		if (isActive) {
 			p.textSize(12);
 			p.fill(0);
-			p.text(pokemon.stats.maxHp + ' / ' + pokemon.stats.maxHp, hpBarX, hpBarY + 14);
+			p.text(`${pokemon.stats.maxHp} / ${pokemon.stats.maxHp}`, hpBarX, hpBarY + 14);
 		}
 
 		if (isSelected && this.cursorBlink < 0.7) {
@@ -244,7 +244,7 @@ export class SettingsMenuScene {
 		p.textAlign(p.LEFT, p.TOP);
 		p.text(pokemon.name, 40, 35);
 		p.textSize(16);
-		p.text('Lv. ' + pokemon.level, 400, 38);
+		p.text(`Lv. ${pokemon.level}`, 400, 38);
 
 		p.textSize(14);
 		p.text('HP', 200, 80);
@@ -254,17 +254,17 @@ export class SettingsMenuScene {
 		p.rect(240, 80, 150, 14);
 
 		p.fill(0);
-		p.text(pokemon.stats.maxHp + '/' + pokemon.stats.maxHp, 400, 80);
-		p.text('ATK    ' + pokemon.stats.attack, 200, 110);
-		p.text('DEF    ' + pokemon.stats.defense, 200, 135);
+		p.text(`${pokemon.stats.maxHp}/${pokemon.stats.maxHp}`, 400, 80);
+		p.text(`ATK    ${pokemon.stats.attack}`, 200, 110);
+		p.text(`DEF    ${pokemon.stats.defense}`, 200, 135);
 
 		p.textSize(16);
 		p.text('MOVES:', 40, 180);
 		p.textSize(14);
 
 		pokemon.moves.forEach((move, i) => {
-			p.text(i + 1 + '. ' + move.name, 60, 210 + i * 25);
-			p.text('PWR: ' + move.power, 250, 210 + i * 25);
+			p.text(`${i + 1}. ${move.name}`, 60, 210 + i * 25);
+			p.text(`PWR: ${move.power}`, 250, 210 + i * 25);
 		});
 
 		if (debugMode.isEnabled()) {
@@ -353,7 +353,7 @@ export class SettingsMenuScene {
 		pokemonNames.forEach((name, i) => {
 			const col = i % 3;
 			const row = Math.floor(i / 3);
-			p.text('[' + (i + 1) + '] ' + name, 60 + col * 140, 260 + row * 25);
+			p.text(`[${i + 1}] ${name}`, 60 + col * 140, 260 + row * 25);
 		});
 
 		p.textSize(12);
@@ -458,7 +458,7 @@ export class SettingsMenuScene {
 		return true;
 	}
 
-	private handlePokemonDetailInput(key: string): boolean {
+	private handlePokemonDetailInput(_key: string): boolean {
 		return true;
 	}
 
@@ -491,13 +491,14 @@ export class SettingsMenuScene {
 			case 'HEAL ALL':
 				console.log('[Debug] Heal all Pokemon');
 				break;
-			case 'TOGGLE NPC DEFEATED':
+			case 'TOGGLE NPC DEFEATED': {
 				const npc = gameState.getNPC('gentleman_01');
 				if (npc) {
 					npc.defeated = !npc.defeated;
 					console.log(`[Debug] NPC defeated: ${npc.defeated}`);
 				}
 				break;
+			}
 			case 'BACK':
 				this.currentState = 'main';
 				this.selectedIndex = 0;

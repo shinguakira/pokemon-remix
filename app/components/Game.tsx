@@ -56,7 +56,7 @@ export default function Game() {
 
 	return (
 		<div className="game-container" ref={gameContainerRef}>
-			<canvas id="game" className="max-w-full object-contain"></canvas>
+			<canvas id="game" className="max-w-full object-contain" />
 		</div>
 	);
 }

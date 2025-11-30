@@ -272,7 +272,7 @@ export class WorldScene extends Scene {
 		this.flashAlpha = 0;
 	}
 
-	onEnter(data?: Record<string, unknown>): void {
+	onEnter(_data?: Record<string, unknown>): void {
 		// Reset dialogue state when entering
 		this.reset();
 	}

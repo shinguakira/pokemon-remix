@@ -55,13 +55,13 @@ export class EventBus {
 
 		const callbacks = this.listeners.get(event);
 		if (callbacks) {
-			callbacks.forEach((callback) => {
+			for (const callback of callbacks) {
 				try {
 					callback(data);
 				} catch (error) {
 					console.error(`[EventBus] Error in handler for "${event}":`, error);
 				}
-			});
+			}
 		}
 	}
 

@@ -12,6 +12,7 @@
     "format:fix": "biome format --write src app",
     "check": "biome check src app",
     "check:fix": "biome check --write src app",
+    "check:fix:all": "biome check --write --unsafe src app",
     "start": "remix-serve ./build/server/index.js",
     "typecheck": "tsc"
   },

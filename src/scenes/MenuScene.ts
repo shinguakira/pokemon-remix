@@ -18,10 +18,6 @@ export class MenuScene extends Scene {
 	private blinkBack = false;
 	private easing = 0.5;
 
-	constructor(p: P5Instance) {
-		super(p);
-	}
-
 	load(p: P5Instance): void {
 		this.titleImage = p.loadImage('/assets/title.png') as unknown as p5.Image;
 		this.startImage = p.loadImage('/assets/start.png') as unknown as p5.Image;

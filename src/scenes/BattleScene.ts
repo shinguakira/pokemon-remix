@@ -154,7 +154,7 @@ export class BattleScene extends Scene {
 		this.isSetup = true;
 	}
 
-	private async startBattleIntro(): Promise<void> {
+	private startBattleIntro(): void {
 		this.dialogBox.show();
 		this.dialogBox.displayText('Mark the gentleman wants to battle!', async () => {
 			await wait(2000);
@@ -323,7 +323,7 @@ export class BattleScene extends Scene {
 		}
 	}
 
-	private async handlePlayerAttack(): Promise<void> {
+	private handlePlayerAttack(): void {
 		const move = this.playerPokemon.getMove(this.selectedMoveIndex);
 		if (!move) return;
 
@@ -341,7 +341,7 @@ export class BattleScene extends Scene {
 		});
 	}
 
-	private async handleNpcAttack(): Promise<void> {
+	private handleNpcAttack(): void {
 		const moveIndex = this.npcPokemon.getRandomMoveIndex();
 		const move = this.npcPokemon.getMove(moveIndex);
 		if (!move) return;

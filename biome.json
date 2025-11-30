@@ -23,18 +23,34 @@
     "rules": {
       "recommended": true,
       "complexity": {
-        "noUselessTypeConstraint": "warn"
+        "noUselessTypeConstraint": "warn",
+        "useLiteralKeys": "warn",
+        "useOptionalChain": "warn"
       },
       "correctness": {
         "noUnusedImports": "warn",
-        "noUnusedVariables": "warn"
+        "noUnusedVariables": "warn",
+        "noUnusedPrivateClassMembers": "warn",
+        "useExhaustiveDependencies": "warn",
+        "useHookAtTopLevel": "error"
       },
       "style": {
         "noNonNullAssertion": "off",
-        "useConst": "warn"
+        "useConst": "warn",
+        "useImportType": "warn",
+        "useExportType": "warn",
+        "useEnumInitializers": "warn",
+        "useShorthandArrayType": "warn",
+        "noInferrableTypes": "warn",
+        "useTemplate": "warn",
+        "useSelfClosingElements": "warn",
+        "useNumberNamespace": "warn"
       },
       "suspicious": {
-        "noExplicitAny": "off"
+        "noExplicitAny": "off",
+        "noConfusingVoidType": "warn",
+        "noEmptyInterface": "warn",
+        "useAwait": "warn"
       }
     }
   },
@@ -43,6 +59,7 @@
       "quoteStyle": "single",
       "semicolons": "always",
       "trailingCommas": "es5"
-    }
+    },
+    "globals": ["p5"]
   }
 }
