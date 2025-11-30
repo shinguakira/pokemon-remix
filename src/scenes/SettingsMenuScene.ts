@@ -3,7 +3,7 @@
  * Pokemon GBA-style menu overlay
  */
 
-import type { P5Instance, KeyEvent, PokemonConfig } from "../core/types";
+import type { P5Instance, KeyEvent, PokemonConfig } from "../core/interfaces";
 import { gameState } from "../state/GameState";
 import { debugMode } from "../debug/DebugMode";
 import { POKEMON_DB } from "../data/pokemon";

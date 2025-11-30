@@ -1,6 +1,6 @@
 import type p5 from "p5";
-import type { P5Instance } from "../core/types";
 import type {
+  P5Instance,
   IDialog,
   ILoadable,
   IUpdatable,

@@ -39,9 +39,13 @@ Welcome to the Pokemon Remix documentation. This guide covers the game's archite
     ┌──────────┐  ┌──────────┐  ┌──────────┐
     │  Menu    │  │  World   │  │  Battle  │
     │  Scene   │  │  Scene   │  │  Scene   │
-    └──────────┘  └──────────┘  └──────────┘
-          │              │              │
-          └──────────────┼──────────────┘
+    └──────────┘  └─────┬────┘  └──────────┘
+          │             │              │
+          │       ┌─────▼────┐         │
+          │       │ Settings │         │
+          │       │  Menu    │         │
+          │       └──────────┘         │
+          └──────────────┼─────────────┘
                          ▼
 ┌─────────────────────────────────────────────────────────┐
 │                     ENTITIES                             │
@@ -113,16 +117,20 @@ npm run dev
 
 ```
 pokemon-remix/
-├── app/              # Remix web app
+├── app/              # Remix web app (React)
+│   ├── components/   # React components (Game.tsx)
+│   └── routes/       # Page routes
 ├── src/              # Game source (TypeScript)
-│   ├── core/         # Game loop, events, utilities
-│   ├── state/        # State management
-│   ├── entities/     # Game objects
-│   ├── scenes/       # Game scenes
-│   └── data/         # JSON configurations
+│   ├── core/         # Types, events, utilities
+│   ├── state/        # GameState management
+│   ├── entities/     # Player, NPC, Pokemon, Map, etc.
+│   ├── scenes/       # Menu, World, Battle, Settings
+│   ├── data/         # Pokemon & NPC data
+│   ├── debug/        # Debug utilities
+│   └── lib/          # p5.min.js
 ├── public/           # Static assets
 │   ├── assets/       # Images, fonts
-│   └── maps/         # Tiled map data
+│   └── maps/         # Tiled map JSON
 └── docs/             # Documentation (you are here)
 ```
 
@@ -132,26 +140,29 @@ pokemon-remix/
 
 ### Adding a New Pokemon
 
-1. Add entry to `src/data/pokemon.json`
+1. Add entry to `src/data/pokemon.ts` (POKEMON_DB)
 2. Add sprite to `public/assets/`
+3. Register in `src/entities/Pokemon.ts` (PokemonRegistry)
 
 ### Adding a New NPC
 
-1. Add entry to `src/data/npcs.json`
+1. Add entry to `src/state/GameState.ts` (DEFAULT_NPCS)
 2. Add sprites to `public/assets/`
-3. Add spawn point in Tiled map
+3. Add spawn point in Tiled map (`public/maps/world.json`)
+4. Add to WorldScene if needed
 
 ### Adding a New Scene
 
-1. Create scene class in `src/scenes/`
-2. Implement `IScene` interface
-3. Register in `SceneManager`
+1. Create scene class in `src/scenes/` extending `Scene`
+2. Implement lifecycle methods (load, setup, update, draw)
+3. Register in `Game.ts` via `sceneManager.registerScene()`
+4. Add scene name to `SceneName` type in `src/core/types.ts`
 
 ### Adding a New Event
 
-1. Define event type in `src/events/types.ts`
-2. Emit from appropriate component
-3. Add listeners in relevant handlers
+1. Define event handler in `src/core/GameEvents.ts`
+2. Emit with `emitGameEvent("event:name", data)`
+3. Listen with `onGameEvent("event:name", callback)`
 
 ---
 

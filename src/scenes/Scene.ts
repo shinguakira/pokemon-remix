@@ -1,5 +1,9 @@
-import type { P5Instance, SceneName, KeyEvent } from "../core/types";
-import type { IScene } from "../core/interfaces";
+import type {
+  P5Instance,
+  SceneName,
+  KeyEvent,
+  IScene,
+} from "../core/interfaces";
 
 /**
  * Base class for all game scenes.

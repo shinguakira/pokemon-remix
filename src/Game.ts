@@ -1,4 +1,4 @@
-import type { P5Instance, KeyEvent } from "./core/types";
+import type { P5Instance, KeyEvent } from "./core/interfaces";
 import { SceneManager, MenuScene, WorldScene, BattleScene } from "./scenes";
 import { SettingsMenuScene } from "./scenes/SettingsMenuScene";
 import { debugMode } from "./debug/DebugMode";

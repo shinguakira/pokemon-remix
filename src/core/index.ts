@@ -1,7 +1,4 @@
-// Types
-export * from "./types";
-
-// Interfaces
+// Interfaces & Types
 export * from "./interfaces";
 
 // Event System

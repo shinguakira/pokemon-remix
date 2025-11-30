@@ -5,7 +5,7 @@
 
 import { eventBus } from "../core/EventBus";
 import { onGameEvent, emitGameEvent } from "../core/GameEvents";
-import type { PokemonConfig } from "../core/types";
+import type { PokemonConfig } from "../core/interfaces";
 
 // =============================================================================
 // State Types

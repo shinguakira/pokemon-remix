@@ -1,5 +1,5 @@
 import type p5 from "p5";
-import type { P5Instance, SceneName, KeyEvent } from "../core/types";
+import type { P5Instance, SceneName, KeyEvent } from "../core/interfaces";
 import { Scene } from "./Scene";
 import { emitGameEvent } from "../core/GameEvents";
 

@@ -4,8 +4,8 @@ import type {
   TiledMapData,
   SpawnPoint,
   FramePosition,
-} from "../core/types";
-import type { IDrawable } from "../core/interfaces";
+  IDrawable,
+} from "../core/interfaces";
 import { getFramePositions, drawTile } from "../core/utils";
 import { Collidable } from "./Collidable";
 import { Camera } from "./Camera";

@@ -3,7 +3,7 @@
  * Provides type safety when emitting and listening to events
  */
 
-import type { SceneName } from "./types";
+import type { SceneName } from "./interfaces";
 
 // =============================================================================
 // Event Data Types

@@ -8,11 +8,18 @@ Implement an in-game settings/pause menu accessible during gameplay (world scene
 
 ## Project Structure Note
 
-> **Important**: Game source files are located in `public/` folder, NOT the root.
+> **Important**: Game source is now **TypeScript** in `src/` folder.
 >
-> - Scenes: `public/scenes/` (menu.js, world.js, battle.js)
-> - Entities: `public/entities/` (player.js, pokemon.js, debugMode.js, etc.)
-> - Main entry: `public/main.js`
+> - Scenes: `src/scenes/` (MenuScene.ts, WorldScene.ts, BattleScene.ts, SettingsMenuScene.ts)
+> - Entities: `src/entities/` (Character.ts, Pokemon.ts, etc.)
+> - State: `src/state/GameState.ts`
+> - Main entry: `src/Game.ts`
+
+---
+
+## Implementation Status: ✅ COMPLETE
+
+The settings menu has been implemented as `SettingsMenuScene.ts`.
 
 ---
 
@@ -48,38 +55,38 @@ Implement an in-game settings/pause menu accessible during gameplay (world scene
 
 ## Implementation Steps
 
-### Phase 1: Menu Framework
+### Phase 1: Menu Framework ✅
 
-- [ ] Create `public/scenes/settingsMenu.js`
-- [ ] Add menu state management in `main.js`
-- [ ] Implement menu open/close with ESC key
-- [ ] Basic menu UI rendering (background overlay, panel)
+- [x] Create `src/scenes/SettingsMenuScene.ts`
+- [x] Add menu state management in `Game.ts`
+- [x] Implement menu open/close with ESC key
+- [x] Basic menu UI rendering (background overlay, panel)
 
-### Phase 2: UI Components
+### Phase 2: UI Components ✅
 
-- [ ] Create reusable menu item component
-- [ ] Navigation system (arrow keys + enter)
-- [ ] Submenu support
-- [ ] Back button handling
+- [x] Create reusable menu item component
+- [x] Navigation system (arrow keys + enter)
+- [x] Submenu support
+- [x] Back button handling (ESC/Backspace)
 
-### Phase 3: Player Status
+### Phase 3: Player Status ✅
 
-- [ ] Pokemon team display
-- [ ] Pokemon detail view (stats, moves)
-- [ ] Items placeholder UI
+- [x] Pokemon team display
+- [x] Pokemon detail view (stats, moves)
+- [ ] Items placeholder UI (deferred)
 
-### Phase 4: Debug Features
+### Phase 4: Debug Features ✅
 
-- [ ] Pokemon switcher (only in debug mode)
-- [ ] Stat modifier sliders
-- [ ] HP restore button
-- [ ] Scene jump buttons
+- [x] Pokemon switcher (only in debug mode)
+- [x] Heal all Pokemon
+- [ ] Stat modifier sliders (deferred)
+- [ ] Scene jump buttons (deferred)
 
 ### Phase 5: Settings & Save
 
-- [ ] Text speed setting
-- [ ] LocalStorage save/load
-- [ ] Controls help screen
+- [ ] Text speed setting (deferred)
+- [ ] LocalStorage save/load (deferred)
+- [x] Controls help screen
 
 ---
 
@@ -106,22 +113,23 @@ CLOSED -> MAIN_MENU -> POKEMON_VIEW -> POKEMON_DETAIL
 ### Data Flow
 
 ```
-main.js
-  └── settingsMenu.js
-        ├── Reads: world.player, battle.playerPokemon, debugMode
-        └── Writes: battle.playerPokemon, debugMode.enabled, gameSettings
+Game.ts
+  └── SettingsMenuScene.ts
+        ├── Reads: gameState (player, NPCs, pokemon), debugMode
+        └── Writes: gameState, debugMode.enabled
+        └── Callbacks: setPlayerFreeze (via WorldScene)
 ```
 
 ---
 
-## File Changes Required
+## Files Implemented
 
-| File                            | Changes                                                  |
-| ------------------------------- | -------------------------------------------------------- |
-| `public/main.js`                | Add settingsMenu import, ESC key handler, menu rendering |
-| `public/scenes/settingsMenu.js` | NEW - Main menu scene                                    |
-| `public/entities/gameState.js`  | NEW - Centralized game state (items, settings)           |
-| `public/entities/menuUI.js`     | NEW - Reusable UI components                             |
+| File                              | Status | Description                                  |
+| --------------------------------- | ------ | -------------------------------------------- |
+| `src/Game.ts`                     | ✅     | ESC key handler, menu integration            |
+| `src/scenes/SettingsMenuScene.ts` | ✅     | Full settings menu with all screens          |
+| `src/state/GameState.ts`          | ✅     | Centralized game state (player, NPCs, flags) |
+| `src/scenes/WorldScene.ts`        | ✅     | Player freeze when menu open                 |
 
 ---
 

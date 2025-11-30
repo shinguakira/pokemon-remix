@@ -1,5 +1,10 @@
-import type { P5Instance, SceneName, KeyEvent } from "../core/types";
-import type { IScene, ISceneManager } from "../core/interfaces";
+import type {
+  P5Instance,
+  SceneName,
+  KeyEvent,
+  IScene,
+  ISceneManager,
+} from "../core/interfaces";
 import { eventBus } from "../core/EventBus";
 import { emitGameEvent, onGameEvent } from "../core/GameEvents";
 import { gameState } from "../state/GameState";

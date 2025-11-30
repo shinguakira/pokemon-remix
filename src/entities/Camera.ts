@@ -1,5 +1,9 @@
-import type { P5Instance } from "../core/types";
-import type { ICamera, IPositionable, IUpdatable } from "../core/interfaces";
+import type {
+  P5Instance,
+  ICamera,
+  IPositionable,
+  IUpdatable,
+} from "../core/interfaces";
 
 /**
  * Configuration for the camera

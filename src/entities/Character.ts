@@ -1,5 +1,4 @@
-import type { P5Instance, Direction } from "../core/types";
-import type { IMovable } from "../core/interfaces";
+import type { P5Instance, Direction, IMovable } from "../core/interfaces";
 import { AnimatedEntity, type AnimatedEntityConfig } from "./AnimatedEntity";
 import { isOnlyOneDirectionPressed, ARROW_KEYS } from "../core/utils";
 

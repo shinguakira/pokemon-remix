@@ -2,12 +2,12 @@ import type p5 from "p5";
 import type {
   P5Instance,
   CharacterConfig,
-  Direction,
   AnimationSet,
   AnimationData,
   FramePosition,
-} from "../core/types";
-import type { IAnimatable } from "../core/interfaces";
+  Direction,
+  IAnimatable,
+} from "../core/interfaces";
 import { Entity } from "./Entity";
 import { getFramePositions, drawTile } from "../core/utils";
 

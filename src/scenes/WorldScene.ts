@@ -1,4 +1,4 @@
-import type { P5Instance, SceneName, KeyEvent } from "../core/types";
+import type { P5Instance, SceneName, KeyEvent } from "../core/interfaces";
 import { Scene } from "./Scene";
 import { Player, NPC, Camera, DialogBox, TiledMap } from "../entities";
 import { checkCollision, preventOverlap } from "../core/utils";

@@ -1,4 +1,4 @@
-import type { Move, PokemonConfig, PokemonStats } from "../core/types";
+import type { Move, PokemonConfig, PokemonStats } from "../core/interfaces";
 import { eventBus } from "../core/EventBus";
 
 /**

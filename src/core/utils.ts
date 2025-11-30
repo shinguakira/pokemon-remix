@@ -1,6 +1,10 @@
 import type p5 from "p5";
-import type { P5Instance, FramePosition, Rectangle } from "./types";
-import type { ICollidable } from "./interfaces";
+import type {
+  P5Instance,
+  FramePosition,
+  Rectangle,
+  ICollidable,
+} from "./interfaces";
 
 // =============================================================================
 // Collision Utilities

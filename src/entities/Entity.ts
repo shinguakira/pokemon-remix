@@ -1,6 +1,7 @@
 import type p5 from "p5";
-import type { P5Instance, EntityConfig } from "../core/types";
 import type {
+  P5Instance,
+  EntityConfig,
   IGameObject,
   ICollidable,
   ICameraAware,
