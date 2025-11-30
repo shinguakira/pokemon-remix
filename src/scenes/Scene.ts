@@ -1,5 +1,5 @@
-import { type IGameContext, gameContext } from '../core/GameContext';
-import type { IScene, KeyEvent, P5Instance, SceneName } from '../core/interfaces';
+import { type IGameContext, gameContext } from '@game/core/GameContext';
+import type { IScene, KeyEvent, P5Instance, SceneName } from '@game/core/interfaces';
 
 /**
  * Base class for all game scenes.

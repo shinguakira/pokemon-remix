@@ -3,7 +3,7 @@
  * All Pokemon stats, moves, and configurations
  */
 
-import type { Move, PokemonConfig } from '../core/interfaces';
+import type { Move, PokemonConfig } from '@game/core/interfaces';
 
 // =============================================================================
 // Moves Database

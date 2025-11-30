@@ -1,8 +1,8 @@
-import { eventBus } from './core/EventBus';
-import type { KeyEvent, P5Instance } from './core/interfaces';
-import { debugMode } from './debug/DebugMode';
-import { BattleScene, MenuScene, SceneManager, WorldScene } from './scenes';
-import { SettingsMenuScene } from './scenes/SettingsMenuScene';
+import { eventBus } from '@game/core/EventBus';
+import type { KeyEvent, P5Instance } from '@game/core/interfaces';
+import { debugMode } from '@game/debug/DebugMode';
+import { BattleScene, MenuScene, SceneManager, WorldScene } from '@game/scenes';
+import { SettingsMenuScene } from '@game/scenes/SettingsMenuScene';
 
 // Use global p5 from script
 declare const p5: any;

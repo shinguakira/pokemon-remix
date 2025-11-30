@@ -17,7 +17,7 @@
  * - Interfaces for contracts and extensibility
  */
 
-import { createGame } from './Game';
+import { createGame } from '@game/Game';
 
 // Start the game when the DOM is ready
 if (document.readyState === 'loading') {

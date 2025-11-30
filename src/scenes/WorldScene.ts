@@ -1,7 +1,7 @@
-import { emitGameEvent } from '../core/GameEvents';
-import type { KeyEvent, P5Instance, SceneName } from '../core/interfaces';
-import { checkCollision, preventOverlap } from '../core/utils';
-import { Camera, DialogBox, NPC, Player, TiledMap } from '../entities';
+import { emitGameEvent } from '@game/core/GameEvents';
+import type { KeyEvent, P5Instance, SceneName } from '@game/core/interfaces';
+import { checkCollision, preventOverlap } from '@game/core/utils';
+import { Camera, DialogBox, NPC, Player, TiledMap } from '@game/entities';
 import { Scene } from './Scene';
 
 /**

@@ -1,5 +1,5 @@
-import { eventBus } from '../core/EventBus';
-import type { Move, PokemonConfig, PokemonStats } from '../core/interfaces';
+import { eventBus } from '@game/core/EventBus';
+import type { Move, PokemonConfig, PokemonStats } from '@game/core/interfaces';
 
 /**
  * Pokemon entity for battle system.

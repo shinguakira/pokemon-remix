@@ -1,5 +1,5 @@
-import { emitGameEvent, onGameEvent } from '../core/GameEvents';
-import type { GameFlags, NPCState, PlayerState, PokemonConfig } from '../core/interfaces';
+import { emitGameEvent, onGameEvent } from '@game/core/GameEvents';
+import type { GameFlags, NPCState, PlayerState, PokemonConfig } from '@game/core/interfaces';
 
 // Re-export state interfaces for convenience
 export type {
@@ -7,7 +7,7 @@ export type {
 	NPCState,
 	GameFlags,
 	GameStateData,
-} from '../core/interfaces';
+} from '@game/core/interfaces';
 
 // =============================================================================
 // Default Data

@@ -1,4 +1,4 @@
-import type { ICollidable, P5Instance } from '../core/interfaces';
+import type { ICollidable, P5Instance } from '@game/core/interfaces';
 
 /**
  * Debug mode singleton for development features.

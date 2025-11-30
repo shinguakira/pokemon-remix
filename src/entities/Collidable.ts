@@ -1,5 +1,5 @@
-import type { CollidableConfig, ICollidable, P5Instance } from '../core/interfaces';
-import { checkCollision, preventOverlap } from '../core/utils';
+import type { CollidableConfig, ICollidable, P5Instance } from '@game/core/interfaces';
+import { checkCollision, preventOverlap } from '@game/core/utils';
 
 /**
  * Invisible collision boundary.

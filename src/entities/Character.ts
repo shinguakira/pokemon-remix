@@ -1,5 +1,5 @@
-import type { CharacterEntityConfig, Direction, IMovable, P5Instance } from '../core/interfaces';
-import { ARROW_KEYS, isOnlyOneDirectionPressed } from '../core/utils';
+import type { CharacterEntityConfig, Direction, IMovable, P5Instance } from '@game/core/interfaces';
+import { ARROW_KEYS, isOnlyOneDirectionPressed } from '@game/core/utils';
 import { AnimatedEntity } from './AnimatedEntity';
 
 /**

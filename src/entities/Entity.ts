@@ -4,8 +4,8 @@ import type {
 	ICollidable,
 	IGameObject,
 	P5Instance,
-} from '../core/interfaces';
-import { generateId } from '../core/utils';
+} from '@game/core/interfaces';
+import { generateId } from '@game/core/utils';
 
 /**
  * Base class for all game entities.

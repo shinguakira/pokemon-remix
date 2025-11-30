@@ -1,5 +1,4 @@
-import type p5 from 'p5';
-import { eventBus } from '../core/EventBus';
+import { eventBus } from '@game/core/EventBus';
 import type {
 	DialogBoxConfig,
 	IDialog,
@@ -7,7 +6,8 @@ import type {
 	ILoadable,
 	IUpdatable,
 	P5Instance,
-} from '../core/interfaces';
+} from '@game/core/interfaces';
+import type p5 from 'p5';
 
 /**
  * Dialog box for displaying text messages.

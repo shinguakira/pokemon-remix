@@ -4,7 +4,7 @@ import type {
 	IPositionable,
 	IUpdatable,
 	P5Instance,
-} from '../core/interfaces';
+} from '@game/core/interfaces';
 
 /**
  * Camera for following entities and handling viewport transformations.

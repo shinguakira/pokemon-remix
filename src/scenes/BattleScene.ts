@@ -1,8 +1,8 @@
+import { emitGameEvent } from '@game/core/GameEvents';
+import type { KeyEvent, P5Instance, SceneName } from '@game/core/interfaces';
+import { wait } from '@game/core/utils';
+import { DialogBox, type Pokemon, createPokemon, createPokemonFromConfig } from '@game/entities';
 import type p5 from 'p5';
-import { emitGameEvent } from '../core/GameEvents';
-import type { KeyEvent, P5Instance, SceneName } from '../core/interfaces';
-import { wait } from '../core/utils';
-import { DialogBox, type Pokemon, createPokemon, createPokemonFromConfig } from '../entities';
 import { Scene } from './Scene';
 
 /**

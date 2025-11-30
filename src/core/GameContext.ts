@@ -3,7 +3,7 @@
  * Contains references to shared state and services
  */
 
-import { gameState } from '../state/GameState';
+import { gameState } from '@game/state/GameState';
 import type { PokemonConfig } from './interfaces';
 
 /**

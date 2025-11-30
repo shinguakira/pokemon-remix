@@ -3,10 +3,10 @@
  * Pokemon GBA-style menu overlay
  */
 
-import { type IGameContext, gameContext } from '../core/GameContext';
-import type { KeyEvent, P5Instance, PokemonConfig } from '../core/interfaces';
-import { POKEMON_DB } from '../data/pokemon';
-import { debugMode } from '../debug/DebugMode';
+import { type IGameContext, gameContext } from '@game/core/GameContext';
+import type { KeyEvent, P5Instance, PokemonConfig } from '@game/core/interfaces';
+import { POKEMON_DB } from '@game/data/pokemon';
+import { debugMode } from '@game/debug/DebugMode';
 
 // =============================================================================
 // Types

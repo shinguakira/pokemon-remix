@@ -1,5 +1,5 @@
-import { emitGameEvent, onGameEvent } from '../core/GameEvents';
-import type { IScene, ISceneManager, KeyEvent, P5Instance, SceneName } from '../core/interfaces';
+import { emitGameEvent, onGameEvent } from '@game/core/GameEvents';
+import type { IScene, ISceneManager, KeyEvent, P5Instance, SceneName } from '@game/core/interfaces';
 
 /**
  * Manages game scenes and transitions between them.

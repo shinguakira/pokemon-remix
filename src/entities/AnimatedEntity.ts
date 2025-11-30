@@ -1,4 +1,3 @@
-import type p5 from 'p5';
 import type {
 	AnimatedEntityConfig,
 	AnimationData,
@@ -7,8 +6,9 @@ import type {
 	FramePosition,
 	IAnimatable,
 	P5Instance,
-} from '../core/interfaces';
-import { drawTile, getFramePositions } from '../core/utils';
+} from '@game/core/interfaces';
+import { drawTile, getFramePositions } from '@game/core/utils';
+import type p5 from 'p5';
 import { Entity } from './Entity';
 
 /**

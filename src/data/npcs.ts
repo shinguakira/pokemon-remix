@@ -3,7 +3,7 @@
  * All NPC configurations loaded into GameState
  */
 
-import type { NPCState } from '../state/GameState';
+import type { NPCState } from '@game/state/GameState';
 
 // =============================================================================
 // NPC Database
