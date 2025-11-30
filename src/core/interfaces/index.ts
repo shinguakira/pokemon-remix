@@ -4,37 +4,37 @@
  */
 
 // Core
-export * from "./core";
+export * from './core';
 
 // Animation
-export * from "./animation";
+export * from './animation';
 
 // Entity
-export * from "./entity";
+export * from './entity';
 
 // Pokemon
-export * from "./pokemon";
+export * from './pokemon';
 
 // Scene
-export * from "./scene";
+export * from './scene';
 
 // Map
-export * from "./map";
+export * from './map';
 
 // Lifecycle
-export * from "./lifecycle";
+export * from './lifecycle';
 
 // Capabilities
-export * from "./capabilities";
+export * from './capabilities';
 
 // Events
-export * from "./events";
+export * from './events';
 
 // Game
-export * from "./game";
+export * from './game';
 
 // Config
-export * from "./config";
+export * from './config';
 
 // State
-export * from "./state";
+export * from './state';

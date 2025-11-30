@@ -1,67 +1,62 @@
-import type {
-  P5Instance,
-  SceneName,
-  KeyEvent,
-  IScene,
-} from "../core/interfaces";
+import type { IScene, KeyEvent, P5Instance, SceneName } from '../core/interfaces';
 
 /**
  * Base class for all game scenes.
  * Provides lifecycle methods and common functionality.
  */
 export abstract class Scene implements IScene {
-  abstract readonly name: SceneName;
+	abstract readonly name: SceneName;
 
-  protected p: P5Instance;
-  protected isLoaded: boolean = false;
-  protected isSetup: boolean = false;
+	protected p: P5Instance;
+	protected isLoaded = false;
+	protected isSetup = false;
 
-  constructor(p: P5Instance) {
-    this.p = p;
-  }
+	constructor(p: P5Instance) {
+		this.p = p;
+	}
 
-  /**
-   * Load scene assets
-   */
-  abstract load(p: P5Instance): void | Promise<void>;
+	/**
+	 * Load scene assets
+	 */
+	abstract load(p: P5Instance): void | Promise<void>;
 
-  /**
-   * Setup scene after loading
-   */
-  abstract setup(): void;
+	/**
+	 * Setup scene after loading
+	 */
+	abstract setup(): void;
 
-  /**
-   * Update scene state
-   */
-  abstract update(deltaTime: number): void;
+	/**
+	 * Update scene state
+	 */
+	abstract update(deltaTime: number): void;
 
-  /**
-   * Draw scene
-   */
-  abstract draw(p: P5Instance): void;
+	/**
+	 * Draw scene
+	 */
+	abstract draw(p: P5Instance): void;
 
-  /**
-   * Reset scene to initial state
-   */
-  abstract reset(): void;
+	/**
+	 * Reset scene to initial state
+	 */
+	abstract reset(): void;
 
-  /**
-   * Called when entering this scene
-   */
-  onEnter?(data?: Record<string, unknown>): void;
+	/**
+	 * Called when entering this scene
+	 */
+	onEnter?(data?: Record<string, unknown>): void;
 
-  /**
-   * Called when leaving this scene
-   */
-  onExit?(): void;
+	/**
+	 * Called when leaving this scene
+	 */
+	onExit?(): void;
 
-  /**
-   * Handle key press events
-   */
-  onKeyPressed?(event: KeyEvent): void;
+	/**
+	 * Handle key press events
+	 */
+	onKeyPressed?(event: KeyEvent): void;
 
-  /**
-   * Handle key release events
-   */
-  onKeyReleased?(event: KeyEvent): void;
+	/**
+	 * Handle key release events
+	 */
+	onKeyReleased?(event: KeyEvent): void;
 }

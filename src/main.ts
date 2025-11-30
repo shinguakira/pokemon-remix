@@ -17,13 +17,13 @@
  * - Interfaces for contracts and extensibility
  */
 
-import { createGame } from "./Game";
+import { createGame } from './Game';
 
 // Start the game when the DOM is ready
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", () => {
-    createGame();
-  });
+if (document.readyState === 'loading') {
+	document.addEventListener('DOMContentLoaded', () => {
+		createGame();
+	});
 } else {
-  createGame();
+	createGame();
 }

@@ -1,22 +1,22 @@
 // Re-export everything for easy imports
 
 // Core
-export * from "./core";
+export * from './core';
 
 // State Management
-export * from "./state";
+export * from './state';
 
 // Data
-export * from "./data";
+export * from './data';
 
 // Entities
-export * from "./entities";
+export * from './entities';
 
 // Scenes
-export * from "./scenes";
+export * from './scenes';
 
 // Debug
-export { debugMode } from "./debug/DebugMode";
+export { debugMode } from './debug/DebugMode';
 
 // Game
-export { Game, createGame } from "./Game";
+export { Game, createGame } from './Game';

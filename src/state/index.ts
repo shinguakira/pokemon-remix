@@ -1,8 +1,8 @@
 // State Management
-export { GameState, gameState } from "./GameState";
+export { GameState, gameState } from './GameState';
 export type {
-  PlayerState,
-  NPCState,
-  GameFlags,
-  GameStateData,
-} from "./GameState";
+	PlayerState,
+	NPCState,
+	GameFlags,
+	GameStateData,
+} from './GameState';
