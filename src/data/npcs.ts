@@ -15,8 +15,8 @@ export const NPC_DB: Record<string, Omit<NPCState, "defeated">> = {
     name: "Mark",
     title: "Gentleman",
     pokemon: ["VENUSAUR"],
-    spriteUrl: "assets/trainer_GENTLEMAN.png",
-    battleSpriteUrl: "assets/GENTLEMAN.png",
+    spriteUrl: "/assets/trainer_GENTLEMAN.png",
+    battleSpriteUrl: "/assets/GENTLEMAN.png",
     dialogue: {
       beforeBattle: "I see that you need training.\nLet's battle!",
       afterDefeat: "You already defeated me...",
@@ -33,8 +33,8 @@ export const NPC_DB: Record<string, Omit<NPCState, "defeated">> = {
     name: "Joey",
     title: "Youngster",
     pokemon: ["RATTATA"], // Would need to add RATTATA to pokemon.ts
-    spriteUrl: "assets/trainer_YOUNGSTER.png",
-    battleSpriteUrl: "assets/YOUNGSTER.png",
+    spriteUrl: "/assets/trainer_YOUNGSTER.png",
+    battleSpriteUrl: "/assets/YOUNGSTER.png",
     dialogue: {
       beforeBattle: "My RATTATA is in the top percentage of RATTATA!",
       afterDefeat: "Your Pokemon are amazing!",

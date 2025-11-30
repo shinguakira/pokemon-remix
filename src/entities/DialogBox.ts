@@ -60,7 +60,7 @@ export class DialogBox implements IDialog, ILoadable, IUpdatable, IDrawable {
   constructor(config: DialogBoxConfig) {
     this.x = config.x;
     this.y = config.y;
-    this.spriteUrl = config.spriteUrl ?? "assets/overlay_message.png";
+    this.spriteUrl = config.spriteUrl ?? "/assets/overlay_message.png";
     this.textSpeed = config.textSpeed ?? 60; // 60 chars per second
     this.textSize = config.textSize ?? 24;
     this.textColor = config.textColor ?? "black";

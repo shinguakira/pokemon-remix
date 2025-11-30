@@ -146,22 +146,22 @@ export class BattleScene extends Scene {
   load(p: P5Instance): void {
     // Cast to handle p5's async type definition
     this.sprites.background = p.loadImage(
-      "assets/battle-background.png"
+      "/assets/battle-background.png"
     ) as unknown as p5.Image;
     this.sprites.npc = p.loadImage(
-      "assets/GENTLEMAN.png"
+      "/assets/GENTLEMAN.png"
     ) as unknown as p5.Image;
     this.sprites.playerPokemon = p.loadImage(
-      "assets/BLASTOISE.png"
+      "/assets/BLASTOISE.png"
     ) as unknown as p5.Image;
     this.sprites.npcPokemon = p.loadImage(
-      "assets/VENUSAUR.png"
+      "/assets/VENUSAUR.png"
     ) as unknown as p5.Image;
     this.sprites.playerDataBox = p.loadImage(
-      "assets/databox_thin.png"
+      "/assets/databox_thin.png"
     ) as unknown as p5.Image;
     this.sprites.npcDataBox = p.loadImage(
-      "assets/databox_thin_foe.png"
+      "/assets/databox_thin_foe.png"
     ) as unknown as p5.Image;
     this.dialogBox.load(p);
     this.isLoaded = true;

@@ -1,16 +1,11 @@
-import p5 from "p5";
 import type { P5Instance, KeyEvent } from "./core/types";
 import { SceneManager, MenuScene, WorldScene, BattleScene } from "./scenes";
+import { SettingsMenuScene } from "./scenes/SettingsMenuScene";
 import { debugMode } from "./debug/DebugMode";
 import { eventBus } from "./core/EventBus";
-import { gameState } from "./state/GameState";
 
-// Extend p5 type to include preload
-declare module "p5" {
-  interface p5InstanceExtensions {
-    preload?: () => void;
-  }
-}
+// Use global p5 from script
+declare const p5: any;
 
 /**
  * Main game class that initializes and runs the game loop.
@@ -19,101 +14,119 @@ declare module "p5" {
 export class Game {
   private p: P5Instance | null = null;
   private sceneManager: SceneManager | null = null;
-  private font: p5.Font | null = null;
+  private settingsMenu: SettingsMenuScene | null = null;
+  private worldScene: WorldScene | null = null;
+  private font: any = null;
 
   /**
    * Initialize and start the game
    */
   start(): void {
-    new p5((p: P5Instance) => {
+    // Wait for canvas to be available
+    const canvas = document.getElementById("game");
+    if (!canvas) {
+      console.error("Canvas element not found");
+      return;
+    }
+
+    const sketch = (p: P5Instance) => {
       this.p = p;
 
-      (p as unknown as { preload: () => void }).preload = () => this.preload(p);
-      p.setup = () => this.setup(p);
-      p.draw = () => this.draw(p);
+      // Skip preload for now - font will be loaded if available
+      // (p as unknown as { preload: () => void }).preload = () => {
+      //   this.font = p.loadFont("/assets/power-clear.ttf") as unknown as p5.Font;
+      // };
+
+      p.setup = () => {
+        p.createCanvas(512, 384, canvas as HTMLCanvasElement);
+        p.pixelDensity(3);
+        (canvas as HTMLCanvasElement).style.cssText = "";
+        if (this.font) p.textFont(this.font);
+        p.noSmooth();
+        this.initScenes(p);
+      };
+
+      p.draw = () => {
+        if (!this.sceneManager) {
+          p.background(0);
+          return;
+        }
+        this.sceneManager.update(p.deltaTime);
+        this.sceneManager.draw();
+
+        // Draw settings menu on top
+        if (this.settingsMenu) {
+          this.settingsMenu.update();
+          this.settingsMenu.draw();
+        }
+
+        debugMode.drawFpsCounter(p);
+      };
+
       p.keyPressed = (event?: KeyboardEvent) => {
         if (event) this.keyPressed(event as unknown as KeyEvent);
       };
+
       p.keyReleased = (event?: KeyboardEvent) => {
         if (event) this.keyReleased(event as unknown as KeyEvent);
       };
-    });
-  }
-
-  /**
-   * Preload assets
-   */
-  private preload(p: P5Instance): void {
-    // Load font (cast to handle async type)
-    this.font = p.loadFont("./assets/power-clear.ttf") as unknown as p5.Font;
-
-    // Initialize scene manager
-    this.sceneManager = new SceneManager(p, "menu");
-
-    // Create and register scenes
-    const menuScene = new MenuScene(p);
-    const worldScene = new WorldScene(p);
-    const battleScene = new BattleScene(p);
-
-    // Set up scene changers
-    const setScene = (
-      name: "menu" | "world" | "battle",
-      data?: Record<string, unknown>
-    ) => {
-      this.sceneManager?.setScene(name, data);
     };
-    worldScene.setSceneChanger(setScene);
-    battleScene.setSceneChanger(setScene);
 
-    // Register scenes
-    this.sceneManager.registerScene(menuScene);
-    this.sceneManager.registerScene(worldScene);
-    this.sceneManager.registerScene(battleScene);
-
-    // Load all scenes
-    this.sceneManager.loadAll();
-
-    // SceneManager now handles scene:transition events automatically
-    // Enable debug mode for event logging during development
-    eventBus.setDebug(false);
+    new p5(sketch);
   }
 
   /**
-   * Setup game
+   * Initialize scenes after p5 is ready
    */
-  private setup(p: P5Instance): void {
-    // Create canvas
-    const gameCanvas = document.getElementById("game") as HTMLCanvasElement;
-    p.createCanvas(512, 384, gameCanvas);
+  private initScenes(p: P5Instance): void {
+    try {
+      // Initialize scene manager
+      this.sceneManager = new SceneManager(p, "menu");
 
-    // Make canvas sharper
-    p.pixelDensity(3);
+      // Create menu scene first (simplest)
+      const menuScene = new MenuScene(p);
+      this.sceneManager.registerScene(menuScene);
 
-    // Clear default p5 styles on canvas
-    gameCanvas.style.cssText = "";
+      // Load and setup menu
+      menuScene.load(p);
+      menuScene.setup();
 
-    // Set font
-    if (this.font) {
-      p.textFont(this.font);
+      // Create other scenes after menu works
+      const worldScene = new WorldScene(p);
+      this.worldScene = worldScene;
+      const battleScene = new BattleScene(p);
+
+      // Create settings menu with player freeze callback
+      this.settingsMenu = new SettingsMenuScene(p, (freeze: boolean) => {
+        if (this.worldScene) {
+          this.worldScene.setPlayerFreeze(freeze);
+        }
+      });
+
+      // Set up scene changers
+      const setScene = (
+        name: "menu" | "world" | "battle",
+        data?: Record<string, unknown>
+      ) => {
+        this.sceneManager?.setScene(name, data);
+      };
+      worldScene.setSceneChanger(setScene);
+      battleScene.setSceneChanger(setScene);
+
+      // Register other scenes
+      this.sceneManager.registerScene(worldScene);
+      this.sceneManager.registerScene(battleScene);
+
+      // Load other scenes (async)
+      worldScene.load(p);
+      battleScene.load(p);
+      worldScene.setup();
+      battleScene.setup();
+
+      eventBus.setDebug(false);
+    } catch (e) {
+      console.error("Error initializing scenes:", e);
     }
-
-    // Disable smoothing for pixel art
-    p.noSmooth();
-
-    // Setup all scenes
-    this.sceneManager?.setupAll();
-  }
-
-  /**
-   * Main draw loop
-   */
-  private draw(p: P5Instance): void {
-    // Update and draw current scene
-    this.sceneManager?.update(p.deltaTime);
-    this.sceneManager?.draw();
-
-    // Draw debug overlay
-    debugMode.drawFpsCounter(p);
   }
 
   /**
@@ -126,8 +139,17 @@ export class Game {
       return;
     }
 
-    // Let scenes handle their own input
-    // Menu scene handles ENTER key internally
+    // ESC to toggle settings menu (only in world scene)
+    if (event.keyCode === 27 && this.sceneManager?.currentScene === "world") {
+      this.settingsMenu?.toggle();
+      return;
+    }
+
+    // If settings menu is open, only handle menu input
+    if (this.settingsMenu?.isOpen) {
+      this.settingsMenu.onKeyPressed(event);
+      return;
+    }
 
     // Forward to current scene
     this.sceneManager?.onKeyPressed(event);

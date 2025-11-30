@@ -182,7 +182,7 @@ export const PokemonRegistry: Record<string, PokemonConfig> = {
       { name: "HYDRO CANNON", power: 45 },
       { name: "WATER GUN", power: 50 },
     ],
-    spriteUrl: "assets/BLASTOISE.png",
+    spriteUrl: "/assets/BLASTOISE.png",
   },
   VENUSAUR: {
     name: "VENUSAUR",
@@ -198,7 +198,7 @@ export const PokemonRegistry: Record<string, PokemonConfig> = {
       { name: "TAKE DOWN", power: 45 },
       { name: "POWER WHIP", power: 50 },
     ],
-    spriteUrl: "assets/VENUSAUR.png",
+    spriteUrl: "/assets/VENUSAUR.png",
   },
   CHARIZARD: {
     name: "CHARIZARD",
@@ -214,7 +214,7 @@ export const PokemonRegistry: Record<string, PokemonConfig> = {
       { name: "DRAGON CLAW", power: 45 },
       { name: "SLASH", power: 40 },
     ],
-    spriteUrl: "assets/CHARIZARD.png",
+    spriteUrl: "/assets/CHARIZARD.png",
   },
 };
 

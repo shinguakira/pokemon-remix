@@ -5,72 +5,69 @@ import { emitGameEvent } from "../core/GameEvents";
 
 /**
  * Menu scene - the game's title/start screen
+ * Uses original title.png and start.png images
  */
 export class MenuScene extends Scene {
   readonly name: SceneName = "menu";
 
   private titleImage: p5.Image | null = null;
-  private titleImageUrl: string = "assets/title.png";
+  private startImage: p5.Image | null = null;
 
-  // Animation state
-  private blinkTimer: number = 0;
-  private showPressEnter: boolean = true;
+  // Blink animation
+  private alpha: number = 255;
+  private blinkBack: boolean = false;
+  private easing: number = 0.5;
 
   constructor(p: P5Instance) {
     super(p);
   }
 
-  load(_p: P5Instance): void {
-    // Load title image if you have one
-    // this.titleImage = p.loadImage(this.titleImageUrl);
+  load(p: P5Instance): void {
+    this.titleImage = p.loadImage("/assets/title.png") as unknown as p5.Image;
+    this.startImage = p.loadImage("/assets/start.png") as unknown as p5.Image;
     this.isLoaded = true;
   }
 
   setup(): void {
-    this.blinkTimer = 0;
-    this.showPressEnter = true;
+    this.alpha = 255;
+    this.blinkBack = false;
     this.isSetup = true;
   }
 
   update(deltaTime: number): void {
-    // Blink "Press Enter" text
-    this.blinkTimer += deltaTime;
-    if (this.blinkTimer >= 500) {
-      this.showPressEnter = !this.showPressEnter;
-      this.blinkTimer = 0;
+    // Blink animation for start text
+    if (this.alpha <= 0) this.blinkBack = true;
+    if (this.alpha >= 255) this.blinkBack = false;
+
+    if (this.blinkBack) {
+      this.alpha += 0.7 * this.easing * deltaTime;
+    } else {
+      this.alpha -= 0.7 * this.easing * deltaTime;
     }
   }
 
   draw(p: P5Instance): void {
     p.clear();
-    p.background(0);
 
-    // Draw title
-    p.push();
-    p.fill(255);
-    p.textSize(48);
-    p.textAlign(p.CENTER, p.CENTER);
-    p.text("POKEMON REMIX", p.width / 2, p.height / 3);
-    p.pop();
+    // Draw title image
+    if (this.titleImage) {
+      p.image(this.titleImage, 0, 0);
+    }
 
-    // Draw "Press Enter" with blinking
-    if (this.showPressEnter) {
-      p.push();
-      p.fill(255);
-      p.textSize(24);
-      p.textAlign(p.CENTER, p.CENTER);
-      p.text("Press ENTER to start", p.width / 2, (p.height * 2) / 3);
-      p.pop();
+    // Draw start text with blink
+    if (this.startImage) {
+      p.tint(255, this.alpha);
+      p.image(this.startImage, 0, 320);
+      p.noTint();
     }
   }
 
   reset(): void {
-    this.blinkTimer = 0;
-    this.showPressEnter = true;
+    this.alpha = 255;
+    this.blinkBack = false;
   }
 
   onKeyPressed(event: KeyEvent): void {
-    // ENTER keyCode is 13
     if (event.keyCode === 13) {
       emitGameEvent("scene:transition", { to: "world" });
     }

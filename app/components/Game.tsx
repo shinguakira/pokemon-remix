@@ -31,7 +31,7 @@ export default function Game() {
     };
     window.addEventListener("keydown", preventScroll);
 
-    // Load p5.js script
+    // Load p5.js script first
     const loadP5 = () => {
       return new Promise<void>((resolve) => {
         if (window.p5) {
@@ -45,30 +45,21 @@ export default function Game() {
       });
     };
 
-    // Load main game script
-    const loadGame = () => {
-      return new Promise<void>((resolve) => {
-        const script = document.createElement("script");
-        script.src = "/main.js";
-        script.type = "module";
-        script.onload = () => resolve();
-        document.body.appendChild(script);
-      });
-    };
-
-    const init = async () => {
+    // Then load game module
+    const initGame = async () => {
       await loadP5();
-      await loadGame();
+      try {
+        const { createGame } = await import("../../src/Game");
+        createGame();
+      } catch (error) {
+        console.error("Failed to load game:", error);
+      }
     };
 
-    init();
+    initGame();
 
     return () => {
-      // Cleanup on unmount
       window.removeEventListener("keydown", preventScroll);
-      document
-        .querySelectorAll('script[src="/p5.min.js"], script[src="/main.js"]')
-        .forEach((s) => s.remove());
     };
   }, []);
 

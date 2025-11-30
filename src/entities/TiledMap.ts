@@ -47,6 +47,9 @@ export class TiledMap implements IDrawable {
   // Debug
   private showDebug: boolean = false;
 
+  // Loading state
+  private isLoaded: boolean = false;
+
   constructor(config: TiledMapConfig) {
     this.x = config.x;
     this.y = config.y;
@@ -64,17 +67,31 @@ export class TiledMap implements IDrawable {
   ): Promise<void> {
     this.tilesetUrl = tilesetUrl;
     this.mapDataUrl = mapDataUrl;
+    this.isLoaded = false;
 
-    // Load tileset image (cast to handle p5's async type definition)
-    this.mapImage = p.loadImage(tilesetUrl) as unknown as p5.Image;
+    // Load tileset image with callback
+    this.mapImage = p.loadImage(
+      tilesetUrl,
+      () => {
+        console.log("Map tileset loaded");
+      },
+      (err) => {
+        console.error("Failed to load map tileset:", err);
+      }
+    ) as unknown as p5.Image;
 
     // Load map data
-    const response = await fetch(mapDataUrl);
-    this.tiledData = await response.json();
+    try {
+      const response = await fetch(mapDataUrl);
+      this.tiledData = await response.json();
 
-    this.prepareTiles();
-    this.extractSpawnPoints();
-    this.extractBoundaries();
+      this.prepareTiles();
+      this.extractSpawnPoints();
+      this.extractBoundaries();
+      this.isLoaded = true;
+    } catch (e) {
+      console.error("Failed to load map data:", e);
+    }
   }
 
   /**
@@ -118,7 +135,7 @@ export class TiledMap implements IDrawable {
           (obj) =>
             new Collidable({
               x: this.x + obj.x,
-              y: this.y + obj.y + this.tileHeight,
+              y: this.y + obj.y,
               width: obj.width,
               height: obj.height,
             })
@@ -182,7 +199,14 @@ export class TiledMap implements IDrawable {
    * Draw the map
    */
   draw(p: P5Instance, camera?: Camera): void {
-    if (!this.tiledData || !this.mapImage) return;
+    // Check if fully loaded
+    if (
+      !this.isLoaded ||
+      !this.tiledData ||
+      !this.mapImage ||
+      this.mapImage.width === 0
+    )
+      return;
 
     const cameraX = camera?.x ?? 0;
     const cameraY = camera?.y ?? 0;

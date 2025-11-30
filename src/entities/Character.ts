@@ -148,7 +148,7 @@ export class Player extends Character {
   constructor(p: P5Instance, config: CharacterEntityConfig) {
     super(p, {
       ...config,
-      spriteUrl: config.spriteUrl ?? "assets/boy_run.png",
+      spriteUrl: config.spriteUrl ?? "/assets/boy_run.png",
       speed: config.speed ?? 200,
     });
   }
@@ -233,7 +233,7 @@ export class NPC extends Character {
   ) {
     super(p, {
       ...config,
-      spriteUrl: config.spriteUrl ?? "assets/trainer_GENTLEMAN.png",
+      spriteUrl: config.spriteUrl ?? "/assets/trainer_GENTLEMAN.png",
       speed: config.speed ?? 0,
     });
     this.npcId = config.npcId ?? this.id;

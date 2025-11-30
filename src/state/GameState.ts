@@ -67,7 +67,7 @@ const DEFAULT_PLAYER: PlayerState = {
         { name: "WATER GUN", power: 50 },
         { name: "SKULL BASH", power: 60 },
       ],
-      spriteUrl: "assets/BLASTOISE.png",
+      spriteUrl: "/assets/BLASTOISE.png",
     },
   ],
   position: { x: 0, y: 0, map: "tower" },
@@ -82,8 +82,8 @@ const DEFAULT_NPCS: Record<string, NPCState> = {
     title: "Gentleman",
     defeated: false,
     pokemon: ["VENUSAUR"],
-    spriteUrl: "assets/trainer_GENTLEMAN.png",
-    battleSpriteUrl: "assets/GENTLEMAN.png",
+    spriteUrl: "/assets/trainer_GENTLEMAN.png",
+    battleSpriteUrl: "/assets/GENTLEMAN.png",
     dialogue: {
       beforeBattle: "I see that you need training.\nLet's battle!",
       afterDefeat: "You already defeated me...",
@@ -91,6 +91,23 @@ const DEFAULT_NPCS: Record<string, NPCState> = {
     rewards: {
       money: 1000,
       exp: 500,
+    },
+  },
+  gentleman_02: {
+    id: "gentleman_02",
+    name: "James",
+    title: "Gentleman",
+    defeated: false,
+    pokemon: ["BLASTOISE"],
+    spriteUrl: "/assets/trainer_GENTLEMAN.png",
+    battleSpriteUrl: "/assets/GENTLEMAN.png",
+    dialogue: {
+      beforeBattle: "I am the second guardian.",
+      afterDefeat: "You already defeated me...",
+    },
+    rewards: {
+      money: 1500,
+      exp: 750,
     },
   },
 };

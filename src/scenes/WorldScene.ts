@@ -13,7 +13,8 @@ export class WorldScene extends Scene {
 
   // Entities
   private player: Player;
-  private npc: NPC;
+  private npc1: NPC;
+  private npc2: NPC;
   private camera: Camera;
   private map: TiledMap;
   private dialogBox: DialogBox;
@@ -41,13 +42,19 @@ export class WorldScene extends Scene {
     this.player = new Player(p, {
       x: 0,
       y: 0,
-      spriteUrl: "assets/boy_run.png",
+      spriteUrl: "/assets/boy_run.png",
     });
-    this.npc = new NPC(p, {
+    this.npc1 = new NPC(p, {
       x: 0,
       y: 0,
-      spriteUrl: "assets/trainer_GENTLEMAN.png",
-      npcId: "gentleman",
+      spriteUrl: "/assets/trainer_GENTLEMAN.png",
+      npcId: "gentleman_01",
+    });
+    this.npc2 = new NPC(p, {
+      x: 0,
+      y: 0,
+      spriteUrl: "/assets/trainer_GENTLEMAN.png",
+      npcId: "gentleman_02",
     });
     this.map = new TiledMap({ x: 100, y: -150 });
     this.dialogBox = new DialogBox({ x: 0, y: 280 });
@@ -71,9 +78,10 @@ export class WorldScene extends Scene {
 
   load(p: P5Instance): void {
     this.player.load(p);
-    this.npc.load(p);
+    this.npc1.load(p);
+    this.npc2.load(p);
     this.dialogBox.load(p);
-    this.map.load(p, "assets/Trainer Tower interior.png", "maps/world.json");
+    this.map.load(p, "/assets/Trainer Tower interior.png", "/maps/world.json");
     this.isLoaded = true;
   }
 
@@ -83,20 +91,27 @@ export class WorldScene extends Scene {
 
     // Get spawn points from map
     const playerSpawn = this.map.getSpawnPosition("player");
-    const npcSpawn = this.map.getSpawnPosition("npc");
+    const npc1Spawn = this.map.getSpawnPosition("npc1");
+    const npc2Spawn = this.map.getSpawnPosition("npc2");
 
     if (playerSpawn) {
       this.player.x = playerSpawn.x;
       this.player.y = playerSpawn.y;
     }
 
-    if (npcSpawn) {
-      this.npc.x = npcSpawn.x;
-      this.npc.y = npcSpawn.y;
+    if (npc1Spawn) {
+      this.npc1.x = npc1Spawn.x;
+      this.npc1.y = npc1Spawn.y;
     }
 
-    // Setup NPC
-    this.npc.setup();
+    if (npc2Spawn) {
+      this.npc2.x = npc2Spawn.x;
+      this.npc2.y = npc2Spawn.y;
+    }
+
+    // Setup NPCs
+    this.npc1.setup();
+    this.npc2.setup();
 
     // Attach camera to player
     this.camera.attachTo(this.player);
@@ -112,6 +127,13 @@ export class WorldScene extends Scene {
     // NPC defeated state is read from GameState
   }
 
+  /**
+   * Set player freeze state (used by settings menu)
+   */
+  setPlayerFreeze(freeze: boolean): void {
+    this.player.setFreeze(freeze);
+  }
+
   update(deltaTime: number): void {
     // Update camera
     this.camera.update(deltaTime);
@@ -119,12 +141,14 @@ export class WorldScene extends Scene {
     // Update player (handles input)
     this.player.update(deltaTime);
 
-    // Update NPC
-    this.npc.update(deltaTime);
+    // Update NPCs
+    this.npc1.update(deltaTime);
+    this.npc2.update(deltaTime);
 
     // Update screen positions
     this.player.updateScreenPosition(this.camera.x, this.camera.y);
-    this.npc.updateScreenPosition(this.camera.x, this.camera.y);
+    this.npc1.updateScreenPosition(this.camera.x, this.camera.y);
+    this.npc2.updateScreenPosition(this.camera.x, this.camera.y);
 
     // Update dialog
     this.dialogBox.update(deltaTime);
@@ -143,14 +167,20 @@ export class WorldScene extends Scene {
     // Skip if player is already frozen in dialogue
     if (this.player.isFrozen() && this.isInDialogue) return;
 
-    if (checkCollision(this.npc, this.player)) {
-      preventOverlap(this.npc, this.player);
+    // Check collision with npc1
+    this.checkNpcInteraction(this.npc1, "gentleman_01");
+    // Check collision with npc2
+    this.checkNpcInteraction(this.npc2, "gentleman_02");
+  }
 
-      // Get NPC dialogue from GameState
-      const npcState = gameState.getNPC(this.currentNpcId);
-      const dialogue = gameState.getNPCDialogue(this.currentNpcId);
+  private checkNpcInteraction(npc: NPC, npcId: string): void {
+    if (checkCollision(npc, this.player)) {
+      preventOverlap(npc, this.player);
 
-      if (!this.isNpcDefeated()) {
+      this.currentNpcId = npcId;
+      const dialogue = gameState.getNPCDialogue(npcId);
+
+      if (!gameState.isNPCDefeated(npcId)) {
         this.player.setFreeze(true);
         this.isInDialogue = true;
         this.dialogBox.show();
@@ -220,8 +250,9 @@ export class WorldScene extends Scene {
     // Draw map
     this.map.draw(p, this.camera);
 
-    // Draw NPC
-    this.npc.draw(p);
+    // Draw NPCs
+    this.npc1.draw(p);
+    this.npc2.draw(p);
 
     // Draw player
     this.player.draw(p);

@@ -67,7 +67,7 @@ export const POKEMON_DB: Record<string, PokemonConfig> = {
       MOVES.WATER_GUN,
       MOVES.SKULL_BASH,
     ],
-    spriteUrl: "assets/BLASTOISE.png",
+    spriteUrl: "/assets/BLASTOISE.png",
   },
 
   VENUSAUR: {
@@ -80,7 +80,7 @@ export const POKEMON_DB: Record<string, PokemonConfig> = {
       speed: 80,
     },
     moves: [MOVES.TACKLE, MOVES.RAZOR_LEAF, MOVES.TAKE_DOWN, MOVES.POWER_WHIP],
-    spriteUrl: "assets/VENUSAUR.png",
+    spriteUrl: "/assets/VENUSAUR.png",
   },
 
   CHARIZARD: {
@@ -98,7 +98,7 @@ export const POKEMON_DB: Record<string, PokemonConfig> = {
       MOVES.DRAGON_CLAW,
       MOVES.TAKE_DOWN,
     ],
-    spriteUrl: "assets/CHARIZARD.png",
+    spriteUrl: "/assets/CHARIZARD.png",
   },
 };
 
