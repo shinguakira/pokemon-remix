@@ -7,6 +7,8 @@ Pokemon Remix is a browser-based Pokemon-style game built with:
 - **p5.js** - Canvas rendering and game loop
 - **Remix** - React framework for web integration
 - **TypeScript** - Type safety and better DX
+- **Biome** - Linting and formatting
+- **Vite** - Build tool
 
 ---
 
@@ -78,7 +80,7 @@ Pokemon Remix is a browser-based Pokemon-style game built with:
 ┌─────────────────────────────────────────────────────────────────────┐
 │                          DATA LAYER                                 │
 │  ┌────────────────┐  ┌────────────────┐  ┌────────────────┐        │
-│  │ pokemon.json   │  │   npcs.json    │  │   maps.json    │        │
+│  │  pokemon.ts    │  │    npcs.ts     │  │  world.json    │        │
 │  │ - stats        │  │ - definitions  │  │ - spawn points │        │
 │  │ - moves        │  │ - pokemon team │  │ - boundaries   │        │
 │  └────────────────┘  └────────────────┘  └────────────────┘        │
@@ -95,56 +97,51 @@ pokemon-remix/
 │   ├── components/
 │   │   └── Game.tsx          # p5.js integration component
 │   ├── routes/
-│   │   └── game.tsx          # /game route
+│   │   └── _index.tsx        # Main route
 │   └── root.tsx              # App shell
 │
 ├── src/                      # Game source (TypeScript)
+│   ├── Game.ts               # Main game class
+│   ├── main.ts               # p5.js initialization
+│   │
 │   ├── core/                 # Core infrastructure
-│   │   ├── Game.ts           # Main game class
+│   │   ├── interfaces/       # TypeScript interfaces
 │   │   ├── EventBus.ts       # Event system
-│   │   ├── AssetLoader.ts    # Asset management
-│   │   └── types.ts          # Shared types
+│   │   ├── GameEvents.ts     # Game event handlers
+│   │   └── utils.ts          # Helper functions
 │   │
 │   ├── state/                # State management
-│   │   ├── GameState.ts      # Central state
-│   │   ├── PlayerState.ts    # Player data
-│   │   └── NPCRegistry.ts    # NPC state
+│   │   └── GameState.ts      # Central state
 │   │
 │   ├── entities/             # Game entities
-│   │   ├── base/             # Base classes
+│   │   ├── Character.ts      # Player/NPC base
 │   │   ├── Player.ts
 │   │   ├── NPC.ts
 │   │   ├── Pokemon.ts
-│   │   └── ...
+│   │   ├── TiledMap.ts
+│   │   ├── DialogBox.ts
+│   │   └── Camera.ts
 │   │
 │   ├── scenes/               # Game scenes
 │   │   ├── SceneManager.ts
 │   │   ├── Scene.ts          # Base class
 │   │   ├── MenuScene.ts
 │   │   ├── WorldScene.ts
-│   │   └── BattleScene.ts
+│   │   ├── BattleScene.ts
+│   │   └── SettingsMenuScene.ts
 │   │
-│   ├── systems/              # Game systems
-│   │   ├── CollisionSystem.ts
-│   │   ├── DialogSystem.ts
-│   │   └── BattleSystem.ts
+│   ├── data/                 # Static data
+│   │   ├── pokemon.ts
+│   │   └── npcs.ts
 │   │
-│   └── data/                 # Static data
-│       ├── pokemon.json
-│       ├── npcs.json
-│       └── moves.json
+│   └── debug/                # Debug utilities
+│       └── DebugMode.ts
 │
 ├── public/                   # Static assets
 │   ├── assets/               # Images, fonts
 │   └── maps/                 # Tiled map data
 │
 └── docs/                     # Documentation
-    ├── ARCHITECTURE.md       # This file
-    ├── GAME_DESIGN.md
-    ├── STATE_MANAGEMENT.md
-    ├── ENTITIES.md
-    ├── SCENES.md
-    └── EVENTS.md
 ```
 
 ---

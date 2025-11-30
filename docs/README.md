@@ -173,6 +173,8 @@ pokemon-remix/
 | **p5.js**      | Canvas rendering, game loop |
 | **Remix**      | React framework, routing    |
 | **TypeScript** | Type safety                 |
+| **Biome**      | Linting & formatting        |
+| **Vite**       | Build tool                  |
 | **Tiled**      | Map editor (JSON export)    |
 
 ---

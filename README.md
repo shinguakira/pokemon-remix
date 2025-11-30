@@ -19,6 +19,7 @@ A Pokemon-style game built with TypeScript and p5.js.
 - **p5.js** - Canvas rendering & game loop
 - **Remix** - React framework (web wrapper)
 - **Vite** - Build tool
+- **Biome** - Linting & formatting
 - **Tiled** - Map editor
 
 ## Getting Started
@@ -27,6 +28,15 @@ A Pokemon-style game built with TypeScript and p5.js.
 npm install
 npm run dev
 # Open http://localhost:5173
+```
+
+## Linting & Formatting
+
+This project uses [Biome](https://biomejs.dev/) for linting and formatting.
+
+```bash
+npm run check:fix      # Fix safe issues
+npm run check:fix:all  # Fix all issues (including unused imports)
 ```
 
 ## Controls
