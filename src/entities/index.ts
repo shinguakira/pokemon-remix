@@ -1,12 +1,7 @@
 // Base classes
 export { Entity } from "./Entity";
-export { AnimatedEntity, type AnimatedEntityConfig } from "./AnimatedEntity";
-export {
-  Character,
-  Player,
-  NPC,
-  type CharacterEntityConfig,
-} from "./Character";
+export { AnimatedEntity } from "./AnimatedEntity";
+export { Character, Player, NPC } from "./Character";
 
 // Game entities
 export {
@@ -15,7 +10,9 @@ export {
   createPokemon,
   registerPokemon,
 } from "./Pokemon";
-export { Camera, type CameraConfig } from "./Camera";
-export { DialogBox, type DialogBoxConfig } from "./DialogBox";
-export { Collidable, type CollidableConfig } from "./Collidable";
-export { TiledMap, type TiledMapConfig } from "./TiledMap";
+export { Camera } from "./Camera";
+export { DialogBox } from "./DialogBox";
+export { Collidable } from "./Collidable";
+export { TiledMap } from "./TiledMap";
+
+// Config interfaces are in core/interfaces

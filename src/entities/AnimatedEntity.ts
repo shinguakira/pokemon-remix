@@ -1,23 +1,15 @@
 import type p5 from "p5";
 import type {
   P5Instance,
-  CharacterConfig,
   AnimationSet,
   AnimationData,
   FramePosition,
   Direction,
   IAnimatable,
+  AnimatedEntityConfig,
 } from "../core/interfaces";
 import { Entity } from "./Entity";
 import { getFramePositions, drawTile } from "../core/utils";
-
-/**
- * Configuration for animated entities
- */
-export interface AnimatedEntityConfig extends CharacterConfig {
-  cols?: number;
-  rows?: number;
-}
 
 /**
  * Base class for entities with sprite animations.

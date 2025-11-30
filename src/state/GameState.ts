@@ -5,50 +5,21 @@
 
 import { eventBus } from "../core/EventBus";
 import { onGameEvent, emitGameEvent } from "../core/GameEvents";
-import type { PokemonConfig } from "../core/interfaces";
+import type {
+  PokemonConfig,
+  PlayerState,
+  NPCState,
+  GameFlags,
+  GameStateData,
+} from "../core/interfaces";
 
-// =============================================================================
-// State Types
-// =============================================================================
-
-export interface PlayerState {
-  name: string;
-  pokemon: PokemonConfig[];
-  position: { x: number; y: number; map: string };
-  money: number;
-  badges: string[];
-}
-
-export interface NPCState {
-  id: string;
-  name: string;
-  title: string;
-  defeated: boolean;
-  pokemon: string[];
-  spriteUrl: string;
-  battleSpriteUrl: string;
-  dialogue: {
-    beforeBattle: string;
-    afterDefeat: string;
-  };
-  rewards: {
-    money: number;
-    exp: number;
-  };
-}
-
-export interface GameFlags {
-  tutorialComplete: boolean;
-  firstBattleWon: boolean;
-  [key: string]: boolean;
-}
-
-export interface GameStateData {
-  player: PlayerState;
-  npcs: Map<string, NPCState>;
-  flags: GameFlags;
-  currentMap: string;
-}
+// Re-export state interfaces for convenience
+export type {
+  PlayerState,
+  NPCState,
+  GameFlags,
+  GameStateData,
+} from "../core/interfaces";
 
 // =============================================================================
 // Default Data

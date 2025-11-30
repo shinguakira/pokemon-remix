@@ -1,15 +1,9 @@
-import type { P5Instance, ICollidable } from "../core/interfaces";
+import type {
+  P5Instance,
+  ICollidable,
+  CollidableConfig,
+} from "../core/interfaces";
 import { checkCollision, preventOverlap } from "../core/utils";
-
-/**
- * Configuration for collidable areas
- */
-export interface CollidableConfig {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
 
 /**
  * Invisible collision boundary.

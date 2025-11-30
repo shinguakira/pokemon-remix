@@ -1,13 +1,11 @@
-import type { P5Instance, Direction, IMovable } from "../core/interfaces";
-import { AnimatedEntity, type AnimatedEntityConfig } from "./AnimatedEntity";
+import type {
+  P5Instance,
+  Direction,
+  IMovable,
+  CharacterEntityConfig,
+} from "../core/interfaces";
+import { AnimatedEntity } from "./AnimatedEntity";
 import { isOnlyOneDirectionPressed, ARROW_KEYS } from "../core/utils";
-
-/**
- * Configuration for character entities
- */
-export interface CharacterEntityConfig extends AnimatedEntityConfig {
-  speed?: number;
-}
 
 /**
  * Base class for movable characters (player, NPCs, etc.)

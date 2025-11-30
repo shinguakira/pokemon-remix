@@ -5,22 +5,9 @@ import type {
   ILoadable,
   IUpdatable,
   IDrawable,
+  DialogBoxConfig,
 } from "../core/interfaces";
 import { eventBus } from "../core/EventBus";
-
-/**
- * Configuration for dialog box
- */
-export interface DialogBoxConfig {
-  x: number;
-  y: number;
-  spriteUrl?: string;
-  textSpeed?: number;
-  textSize?: number;
-  textColor?: string;
-  textOffsetX?: number;
-  textOffsetY?: number;
-}
 
 /**
  * Dialog box for displaying text messages.

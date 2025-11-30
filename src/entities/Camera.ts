@@ -3,22 +3,8 @@ import type {
   ICamera,
   IPositionable,
   IUpdatable,
+  CameraConfig,
 } from "../core/interfaces";
-
-/**
- * Configuration for the camera
- */
-export interface CameraConfig {
-  x?: number;
-  y?: number;
-  smoothing?: number;
-  bounds?: {
-    minX: number;
-    maxX: number;
-    minY: number;
-    maxY: number;
-  };
-}
 
 /**
  * Camera for following entities and handling viewport transformations.

@@ -5,20 +5,11 @@ import type {
   SpawnPoint,
   FramePosition,
   IDrawable,
+  TiledMapConfig,
 } from "../core/interfaces";
 import { getFramePositions, drawTile } from "../core/utils";
 import { Collidable } from "./Collidable";
 import { Camera } from "./Camera";
-
-/**
- * Configuration for tiled maps
- */
-export interface TiledMapConfig {
-  x: number;
-  y: number;
-  tileWidth?: number;
-  tileHeight?: number;
-}
 
 /**
  * Tiled map renderer.
