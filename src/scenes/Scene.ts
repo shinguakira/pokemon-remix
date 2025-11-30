@@ -1,3 +1,4 @@
+import { type IGameContext, gameContext } from '../core/GameContext';
 import type { IScene, KeyEvent, P5Instance, SceneName } from '../core/interfaces';
 
 /**
@@ -10,6 +11,9 @@ export abstract class Scene implements IScene {
 	protected p: P5Instance;
 	protected isLoaded = false;
 	protected isSetup = false;
+
+	/** Shared game context - access player data, NPCs, etc. */
+	protected ctx: IGameContext = gameContext;
 
 	constructor(p: P5Instance) {
 		this.p = p;

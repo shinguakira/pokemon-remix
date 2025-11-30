@@ -8,6 +8,7 @@ export {
 	Pokemon,
 	PokemonRegistry,
 	createPokemon,
+	createPokemonFromConfig,
 	registerPokemon,
 } from './Pokemon';
 export { Camera } from './Camera';

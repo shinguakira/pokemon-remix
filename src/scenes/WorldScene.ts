@@ -2,7 +2,6 @@ import { emitGameEvent } from '../core/GameEvents';
 import type { KeyEvent, P5Instance, SceneName } from '../core/interfaces';
 import { checkCollision, preventOverlap } from '../core/utils';
 import { Camera, DialogBox, NPC, Player, TiledMap } from '../entities';
-import { gameState } from '../state/GameState';
 import { Scene } from './Scene';
 
 /**
@@ -69,7 +68,7 @@ export class WorldScene extends Scene {
 	 * Check if current NPC is defeated (from GameState)
 	 */
 	private isNpcDefeated(): boolean {
-		return gameState.isNPCDefeated(this.currentNpcId);
+		return this.ctx.isNPCDefeated(this.currentNpcId);
 	}
 
 	load(p: P5Instance): void {
@@ -174,9 +173,9 @@ export class WorldScene extends Scene {
 			preventOverlap(npc, this.player);
 
 			this.currentNpcId = npcId;
-			const dialogue = gameState.getNPCDialogue(npcId);
+			const dialogue = this.ctx.getNPCDialogue(npcId);
 
-			if (!gameState.isNPCDefeated(npcId)) {
+			if (!this.ctx.isNPCDefeated(npcId)) {
 				this.player.setFreeze(true);
 				this.isInDialogue = true;
 				this.dialogBox.show();
@@ -203,8 +202,8 @@ export class WorldScene extends Scene {
 		this.isFlashing = false;
 
 		// Get NPC data for battle context
-		const npcState = gameState.getNPC(this.currentNpcId);
-		const playerPokemon = gameState.getPlayerPokemon();
+		const npcState = this.ctx.getNPC(this.currentNpcId);
+		const playerPokemon = this.ctx.getPlayerPokemon();
 
 		// Emit battle start event with full context
 		emitGameEvent('battle:start', {

@@ -230,6 +230,13 @@ export function createPokemon(key: keyof typeof PokemonRegistry): Pokemon {
 }
 
 /**
+ * Create a Pokemon directly from a config object
+ */
+export function createPokemonFromConfig(config: PokemonConfig): Pokemon {
+	return new Pokemon(config);
+}
+
+/**
  * Register a new Pokemon type
  */
 export function registerPokemon(key: string, config: PokemonConfig): void {

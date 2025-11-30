@@ -127,6 +127,10 @@ export class GameState {
 		return this.player.pokemon;
 	}
 
+	setPlayerPokemon(pokemon: PokemonConfig[]): void {
+		this.player.pokemon = pokemon;
+	}
+
 	getPlayerPosition(): { x: number; y: number; map: string } {
 		return this.player.position;
 	}

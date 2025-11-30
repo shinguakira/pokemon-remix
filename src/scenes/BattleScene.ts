@@ -2,7 +2,7 @@ import type p5 from 'p5';
 import { emitGameEvent } from '../core/GameEvents';
 import type { KeyEvent, P5Instance, SceneName } from '../core/interfaces';
 import { wait } from '../core/utils';
-import { DialogBox, type Pokemon, createPokemon } from '../entities';
+import { DialogBox, type Pokemon, createPokemon, createPokemonFromConfig } from '../entities';
 import { Scene } from './Scene';
 
 /**
@@ -415,11 +415,22 @@ export class BattleScene extends Scene {
 	}
 
 	onEnter(data?: Record<string, unknown>): void {
-		this.reset();
-		this.setup();
-
 		if (data?.npcId) {
 			this.currentNpcId = data.npcId as string;
+		}
+
+		// Get player's first Pokemon from context
+		const playerParty = this.ctx.getPlayerPokemon();
+
+		if (playerParty.length > 0) {
+			this.playerPokemon = createPokemonFromConfig(playerParty[0]);
+
+			// Load the sprite for this Pokemon
+			if (playerParty[0].spriteUrl) {
+				this.sprites.playerPokemon = this.p.loadImage(
+					playerParty[0].spriteUrl
+				) as unknown as p5.Image;
+			}
 		}
 	}
 

@@ -3,23 +3,29 @@
  * Pokemon GBA-style menu overlay
  */
 
+import { type IGameContext, gameContext } from '../core/GameContext';
 import type { KeyEvent, P5Instance, PokemonConfig } from '../core/interfaces';
 import { POKEMON_DB } from '../data/pokemon';
 import { debugMode } from '../debug/DebugMode';
-import { gameState } from '../state/GameState';
 
 // =============================================================================
 // Types
 // =============================================================================
 
-type MenuState = 'main' | 'pokemon' | 'pokemon-detail' | 'bag' | 'option' | 'debug';
+type MenuState = 'main' | 'pokemon' | 'pokemon-detail' | 'bag' | 'option' | 'debug' | 'edit-party';
 
 // =============================================================================
 // Constants
 // =============================================================================
 
 const MAIN_MENU_ITEMS = ['POKéMON', 'BAG', 'SAVE', 'OPTION', 'EXIT'];
-const DEBUG_MENU_ITEMS = ['SWITCH POKEMON', 'HEAL ALL', 'TOGGLE NPC DEFEATED', 'BACK'];
+const DEBUG_MENU_ITEMS = [
+	'SWITCH POKEMON',
+	'HEAL ALL',
+	'TOGGLE NPC DEFEATED',
+	'EDIT PARTY',
+	'BACK',
+];
 
 // =============================================================================
 // SettingsMenuScene Class
@@ -28,6 +34,7 @@ const DEBUG_MENU_ITEMS = ['SWITCH POKEMON', 'HEAL ALL', 'TOGGLE NPC DEFEATED', '
 export class SettingsMenuScene {
 	private p: P5Instance;
 	private setPlayerFreeze: (freeze: boolean) => void;
+	private ctx: IGameContext = gameContext;
 
 	// State
 	isOpen = false;
@@ -45,6 +52,13 @@ export class SettingsMenuScene {
 	// Animation
 	private slideOffset = 150;
 	private targetSlideOffset = 0;
+
+	// Edit party state
+	private editPartySlots: (string | null)[] = [null, null, null, null, null, null];
+	private editPartySelectedSlot = 0;
+	private editPartyPokemonList: string[] = [];
+	private editPartyPokemonIndex = 0;
+	private editPartyMode: 'slot' | 'pokemon' = 'slot';
 
 	constructor(p: P5Instance, setPlayerFreeze: (freeze: boolean) => void) {
 		this.p = p;
@@ -110,6 +124,9 @@ export class SettingsMenuScene {
 			case 'debug':
 				this.drawDebugScreen();
 				break;
+			case 'edit-party':
+				this.drawEditPartyScreen();
+				break;
 		}
 	}
 
@@ -151,7 +168,7 @@ export class SettingsMenuScene {
 		p.textAlign(p.CENTER, p.TOP);
 		p.text('POKéMON', 256, 30);
 
-		const party = gameState.getPlayerPokemon();
+		const party = this.ctx.getPlayerPokemon();
 		this.drawPokemonSlot(30, 60, 180, 120, party[0], 0, true);
 
 		for (let i = 1; i < 6; i++) {
@@ -228,7 +245,7 @@ export class SettingsMenuScene {
 
 	private drawPokemonDetail(): void {
 		const p = this.p;
-		const party = gameState.getPlayerPokemon();
+		const party = this.ctx.getPlayerPokemon();
 		const pokemon = party[this.selectedPokemonIndex];
 
 		if (!pokemon) {
@@ -381,11 +398,34 @@ export class SettingsMenuScene {
 		const { key, keyCode } = event;
 
 		if (keyCode === 27) {
-			if (this.currentState === 'main') {
-				this.close();
-			} else {
-				this.currentState = 'main';
-				this.selectedIndex = 0;
+			switch (this.currentState) {
+				case 'main':
+					this.close();
+					break;
+				case 'pokemon-detail':
+					this.currentState = 'pokemon';
+					break;
+				case 'pokemon':
+					this.currentState = 'main';
+					this.selectedIndex = 0; // POKéMON is at index 0
+					break;
+				case 'bag':
+					this.currentState = 'main';
+					this.selectedIndex = 1; // BAG is at index 1
+					break;
+				case 'option':
+					this.currentState = 'main';
+					this.selectedIndex = 3; // OPTION is at index 3
+					break;
+				case 'edit-party':
+					this.saveEditParty();
+					this.currentState = 'debug';
+					this.selectedIndex = 3; // EDIT PARTY is at index 3 in debug menu
+					break;
+				case 'debug':
+					this.currentState = 'main';
+					this.selectedIndex = 5; // DEBUG is at index 5 in main menu
+					break;
 			}
 			return true;
 		}
@@ -399,6 +439,8 @@ export class SettingsMenuScene {
 				return this.handlePokemonDetailInput(key);
 			case 'debug':
 				return this.handleDebugInput(keyCode, key);
+			case 'edit-party':
+				return this.handleEditPartyInput(keyCode);
 			default:
 				return true;
 		}
@@ -428,7 +470,7 @@ export class SettingsMenuScene {
 				this.currentState = 'bag';
 				break;
 			case 'SAVE':
-				gameState.save();
+				this.ctx.save();
 				break;
 			case 'OPTION':
 				this.currentState = 'option';
@@ -444,7 +486,7 @@ export class SettingsMenuScene {
 	}
 
 	private handlePokemonScreenInput(keyCode: number): boolean {
-		const party = gameState.getPlayerPokemon();
+		const party = this.ctx.getPlayerPokemon();
 
 		if (keyCode === 38) {
 			this.selectedPokemonIndex = Math.max(0, this.selectedPokemonIndex - 1);
@@ -492,17 +534,179 @@ export class SettingsMenuScene {
 				console.log('[Debug] Heal all Pokemon');
 				break;
 			case 'TOGGLE NPC DEFEATED': {
-				const npc = gameState.getNPC('gentleman_01');
+				const npc = this.ctx.getNPC('gentleman_01');
 				if (npc) {
 					npc.defeated = !npc.defeated;
 					console.log(`[Debug] NPC defeated: ${npc.defeated}`);
 				}
 				break;
 			}
+			case 'EDIT PARTY':
+				this.openEditParty();
+				break;
 			case 'BACK':
 				this.currentState = 'main';
 				this.selectedIndex = 0;
 				break;
+		}
+	}
+
+	// ===========================================================================
+	// Edit Party Methods
+	// ===========================================================================
+
+	private openEditParty(): void {
+		this.currentState = 'edit-party';
+		this.editPartyPokemonList = Object.keys(POKEMON_DB);
+		this.editPartySelectedSlot = 0;
+		this.editPartyPokemonIndex = 0;
+		this.editPartyMode = 'slot';
+
+		// Initialize slots with current party
+		const currentParty = this.ctx.getPlayerPokemon();
+		this.editPartySlots = [null, null, null, null, null, null];
+		currentParty.forEach((pokemon, i) => {
+			if (i < 6) {
+				this.editPartySlots[i] = pokemon.name;
+			}
+		});
+	}
+
+	private drawEditPartyScreen(): void {
+		const p = this.p;
+		this.drawPanel(20, 20, 472, 344);
+
+		p.push();
+		p.fill(0);
+		p.textSize(18);
+		p.textAlign(p.CENTER, p.TOP);
+		p.text('EDIT PARTY', 256, 30);
+
+		// Draw party slots on left
+		p.textSize(14);
+		p.textAlign(p.LEFT, p.TOP);
+		p.text('YOUR PARTY:', 40, 60);
+
+		for (let i = 0; i < 6; i++) {
+			const slotY = 85 + i * 32;
+			const isSelected = this.editPartyMode === 'slot' && this.editPartySelectedSlot === i;
+
+			// Slot background
+			p.fill(isSelected ? p.color(200, 220, 255) : p.color(240, 240, 240));
+			p.stroke(isSelected ? p.color(0, 100, 200) : p.color(100));
+			p.strokeWeight(isSelected ? 2 : 1);
+			p.rect(40, slotY, 180, 28, 4);
+
+			// Slot content
+			p.fill(0);
+			p.noStroke();
+			const slotText = this.editPartySlots[i] || '(empty)';
+			p.text(`${i + 1}. ${slotText}`, 50, slotY + 7);
+
+			// Cursor
+			if (isSelected && this.cursorBlink < 0.7) {
+				p.text('▶', 28, slotY + 7);
+			}
+		}
+
+		// Draw available Pokemon on right
+		p.text('AVAILABLE:', 260, 60);
+
+		for (let i = 0; i < this.editPartyPokemonList.length; i++) {
+			const itemY = 85 + i * 32;
+			const isSelected = this.editPartyMode === 'pokemon' && this.editPartyPokemonIndex === i;
+
+			// Item background
+			p.fill(isSelected ? p.color(255, 220, 200) : p.color(240, 240, 240));
+			p.stroke(isSelected ? p.color(200, 100, 0) : p.color(100));
+			p.strokeWeight(isSelected ? 2 : 1);
+			p.rect(260, itemY, 180, 28, 4);
+
+			// Item content
+			p.fill(0);
+			p.noStroke();
+			p.text(this.editPartyPokemonList[i], 270, itemY + 7);
+
+			// Cursor
+			if (isSelected && this.cursorBlink < 0.7) {
+				p.text('▶', 248, itemY + 7);
+			}
+		}
+
+		// Instructions
+		p.fill(0);
+		p.textSize(12);
+		p.text('← → Switch columns   ↑ ↓ Navigate', 40, 300);
+		p.text('ENTER: Add   DEL: Remove   [S] SAVE   ESC: Back', 40, 320);
+		p.fill(200, 0, 0);
+		p.textSize(11);
+		p.text('Press S to save changes!', 40, 340);
+		p.pop();
+	}
+
+	private handleEditPartyInput(keyCode: number): boolean {
+		const slotCount = 6;
+		const pokemonCount = this.editPartyPokemonList.length;
+
+		// Up arrow
+		if (keyCode === 38) {
+			if (this.editPartyMode === 'slot') {
+				this.editPartySelectedSlot = (this.editPartySelectedSlot - 1 + slotCount) % slotCount;
+			} else {
+				this.editPartyPokemonIndex = (this.editPartyPokemonIndex - 1 + pokemonCount) % pokemonCount;
+			}
+		}
+		// Down arrow
+		else if (keyCode === 40) {
+			if (this.editPartyMode === 'slot') {
+				this.editPartySelectedSlot = (this.editPartySelectedSlot + 1) % slotCount;
+			} else {
+				this.editPartyPokemonIndex = (this.editPartyPokemonIndex + 1) % pokemonCount;
+			}
+		}
+		// Left arrow - switch to slot mode
+		else if (keyCode === 37) {
+			this.editPartyMode = 'slot';
+		}
+		// Right arrow - switch to pokemon mode
+		else if (keyCode === 39) {
+			this.editPartyMode = 'pokemon';
+		}
+		// Enter - add pokemon to slot
+		else if (keyCode === 13) {
+			if (this.editPartyMode === 'pokemon') {
+				const selectedPokemon = this.editPartyPokemonList[this.editPartyPokemonIndex];
+				this.editPartySlots[this.editPartySelectedSlot] = selectedPokemon;
+				this.editPartyMode = 'slot';
+				// Move to next slot
+				if (this.editPartySelectedSlot < 5) {
+					this.editPartySelectedSlot++;
+				}
+			}
+		}
+		// Delete/Backspace - remove pokemon from slot
+		else if (keyCode === 46 || keyCode === 8) {
+			if (this.editPartyMode === 'slot') {
+				this.editPartySlots[this.editPartySelectedSlot] = null;
+			}
+		}
+		// S key - SAVE party
+		else if (keyCode === 83) {
+			this.saveEditParty();
+		}
+
+		return true;
+	}
+
+	private saveEditParty(): void {
+		const newParty: PokemonConfig[] = [];
+		for (const slotName of this.editPartySlots) {
+			if (slotName && POKEMON_DB[slotName]) {
+				newParty.push({ ...POKEMON_DB[slotName] });
+			}
+		}
+		if (newParty.length > 0) {
+			this.ctx.setPlayerPokemon(newParty);
 		}
 	}
 }

@@ -136,15 +136,15 @@ export class Game {
 			return;
 		}
 
-		// ESC to toggle settings menu (only in world scene)
-		if (event.keyCode === 27 && this.sceneManager?.currentScene === 'world') {
-			this.settingsMenu?.toggle();
+		// If settings menu is open, let it handle all input (including ESC)
+		if (this.settingsMenu?.isOpen) {
+			this.settingsMenu.onKeyPressed(event);
 			return;
 		}
 
-		// If settings menu is open, only handle menu input
-		if (this.settingsMenu?.isOpen) {
-			this.settingsMenu.onKeyPressed(event);
+		// ESC to open settings menu (only in world scene, when menu is closed)
+		if (event.keyCode === 27 && this.sceneManager?.currentScene === 'world') {
+			this.settingsMenu?.open();
 			return;
 		}
 

@@ -74,14 +74,18 @@ export class SceneManager implements ISceneManager {
 		// Update current scene
 		this._currentScene = name;
 
-		// Enter new scene
+		// Reset, enter, then setup the new scene
+		if (previousScene !== name) {
+			nextSceneObj.reset();
+		}
+
+		// Enter scene to load data (e.g., Pokemon from gameState)
 		if (nextSceneObj.onEnter) {
 			nextSceneObj.onEnter(data);
 		}
 
-		// Reset the new scene if coming from a different scene
+		// Setup scene AFTER onEnter so it uses the correct data
 		if (previousScene !== name) {
-			nextSceneObj.reset();
 			nextSceneObj.setup();
 		}
 
