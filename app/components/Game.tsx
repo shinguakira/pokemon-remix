@@ -39,7 +39,7 @@ export default function Game() {
           return;
         }
         const script = document.createElement("script");
-        script.src = "/p5.min.js";
+        script.src = "/src/lib/p5.min.js";
         script.onload = () => resolve();
         document.body.appendChild(script);
       });
