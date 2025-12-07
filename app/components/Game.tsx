@@ -1,63 +1,62 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
+
+declare global {
+	interface Window {
+		p5: any;
+	}
+}
 
 export default function Game() {
-  const gameContainerRef = useRef<HTMLDivElement>(null);
+	const gameContainerRef = useRef<HTMLDivElement>(null);
+	const scriptsLoaded = useRef(false);
 
-  useEffect(() => {
-    // Only run this effect in the browser
-    if (typeof window === "undefined") return;
+	useEffect(() => {
+		if (typeof window === 'undefined' || scriptsLoaded.current) return;
+		scriptsLoaded.current = true;
 
-    // Load p5.js script
-    const loadP5Script = () => {
-      return new Promise<void>((resolve) => {
-        if (window.p5) {
-          resolve();
-          return;
-        }
+		// Prevent arrow keys from scrolling the page
+		const preventScroll = (e: KeyboardEvent) => {
+			if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'Escape'].includes(e.key)) {
+				e.preventDefault();
+			}
+		};
+		window.addEventListener('keydown', preventScroll);
 
-        const script = document.createElement("script");
-        script.src = "/p5.min.js";
-        script.onload = () => resolve();
-        document.body.appendChild(script);
-      });
-    };
+		// Load p5.js script first
+		const loadP5 = () => {
+			return new Promise<void>((resolve) => {
+				if (window.p5) {
+					resolve();
+					return;
+				}
+				const script = document.createElement('script');
+				script.src = '/src/lib/p5.min.js';
+				script.onload = () => resolve();
+				document.body.appendChild(script);
+			});
+		};
 
-    // Load game script
-    const loadGameScript = () => {
-      return new Promise<void>((resolve) => {
-        const script = document.createElement("script");
-        script.src = "/game-bundle.js";
-        script.type = "module";
-        script.onload = () => resolve();
-        document.body.appendChild(script);
-      });
-    };
+		// Then load game module
+		const initGame = async () => {
+			await loadP5();
+			try {
+				const { createGame } = await import('../../src/Game');
+				createGame();
+			} catch (error) {
+				console.error('Failed to load game:', error);
+			}
+		};
 
-    const initGame = async () => {
-      await loadP5Script();
-      await loadGameScript();
-    };
+		initGame();
 
-    initGame();
+		return () => {
+			window.removeEventListener('keydown', preventScroll);
+		};
+	}, []);
 
-    // Cleanup function
-    return () => {
-      const p5Script = document.querySelector('script[src="/p5.min.js"]');
-      const gameScript = document.querySelector('script[src="/game-bundle.js"]');
-      
-      if (p5Script) {
-        p5Script.remove();
-      }
-      
-      if (gameScript) {
-        gameScript.remove();
-      }
-    };
-  }, []);
-
-  return (
-    <div className="game-container" ref={gameContainerRef}>
-      <canvas id="game"></canvas>
-    </div>
-  );
+	return (
+		<div className="game-container" ref={gameContainerRef}>
+			<canvas id="game" className="max-w-full object-contain" />
+		</div>
+	);
 }

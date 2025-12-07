@@ -1,3 +1,3 @@
 interface Window {
-  p5: any;
+	p5: any;
 }

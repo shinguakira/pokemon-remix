@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -10,7 +10,7 @@
         margin: 0;
         display: flex;
         justify-content: center;
-        background-image: url("assets/background-art.jpeg");
+        /* background-image: url("assets/background-art.jpeg"); */
         background-size: cover;
         background-position: center;
       }
@@ -23,7 +23,6 @@
   </head>
   <body>
     <canvas id="game"></canvas>
-    <script src="p5.min.js"></script>
     <script>
       // prevent itch.io scrolling
       window.addEventListener("keydown", (e) => {
@@ -36,6 +35,6 @@
         }
       });
     </script>
-    <script type="module" src="main.js"></script>
+    <script type="module" src="src/main.ts"></script>
   </body>
 </html>

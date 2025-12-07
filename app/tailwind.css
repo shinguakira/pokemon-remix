@@ -2,11 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
-html,
-body {
-  @apply bg-white dark:bg-gray-950;
+html {
+	height: 100%;
+}
 
-  @media (prefers-color-scheme: dark) {
-    color-scheme: dark;
-  }
+body {
+	@apply bg-white dark:bg-gray-950;
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	min-height: 100%;
+
+	@media (prefers-color-scheme: dark) {
+		color-scheme: dark;
+	}
+}
+
+.game-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	max-height: 100%;
+}
+
+.game-container canvas {
+	max-height: 100vh;
+	max-width: 100vw;
+	width: auto;
+	height: auto;
 }

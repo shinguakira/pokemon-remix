@@ -231,7 +231,7 @@
                 {
                  "height":0,
                  "id":18,
-                 "name":"npc",
+                 "name":"npc1",
                  "point":true,
                  "rotation":0,
                  "type":"",
@@ -239,6 +239,18 @@
                  "width":0,
                  "x":160,
                  "y":160
+                }, 
+                {
+                 "height":0,
+                 "id":19,
+                 "name":"npc2",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":130,
+                 "y":320
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -247,7 +259,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":19,
+ "nextobjectid":20,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",
